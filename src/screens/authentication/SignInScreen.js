@@ -163,13 +163,6 @@ const SignInScreen = ({ navigation }) => {
       }
     };
   
-    if (state.isLoading) {
-      return (
-        <View style={styles.preloader}>
-          <ActivityIndicator size="large" color={Colors.primary} />
-        </View>
-      );
-    }
   
     return (
       <View style={styles.container}>
@@ -218,34 +211,41 @@ const SignInScreen = ({ navigation }) => {
                   </Text>
                 </View>
               ) : null}
-              <View style={styles.button}>
-                <TouchableOpacity
-                  onPress={loginHandle}
-                  style={[
-                    styles.signIn,
-                    {
-                      borderColor: Colors.primary_dark,
-                      borderWidth: 1,
-                      marginTop: 15,
-                    },
-                  ]}>
-                  <LinearGradient
-                    colors={[Colors.primary, Colors.primary_dark]}
-                    style={styles.signIn}>
-                    <Text style={[styles.textSign, { color: '#fff' }]}>SignIn</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Signup')}
-                  style={[
-                    styles.signIn,
-                    { borderColor: Colors.primary, borderWidth: 1, marginTop: 15 },
-                  ]}>
-                  <Text style={[styles.textSign, { color: Colors.primary_dark }]}>
-                    SignUp
-                  </Text>
-                </TouchableOpacity>
-              </View>
+
+              {state.isLoading ?  
+              <View style={{marginTop:100}}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+          </View>
+        :
+        <View style={styles.button}>
+        <TouchableOpacity
+          onPress={loginHandle}
+          style={[
+            styles.signIn,
+            {
+              borderColor: Colors.primary_dark,
+              borderWidth: 1,
+              marginTop: 15,
+            },
+          ]}>
+          <LinearGradient
+            colors={[Colors.primary, Colors.primary_dark]}
+            style={styles.signIn}>
+            <Text style={[styles.textSign, { color: '#fff' }]}>SignIn</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SignUpScreen')}
+          style={[
+            styles.signIn,
+            { borderColor: Colors.primary, borderWidth: 1, marginTop: 15 },
+          ]}>
+          <Text style={[styles.textSign, { color: Colors.primary_dark }]}>
+            SignUp
+          </Text>
+        </TouchableOpacity>
+      </View>}
+            
             </View>
         
       </View>

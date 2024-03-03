@@ -155,13 +155,6 @@ const SignUpScreen = ({ navigation }) => {
 
     }
 
-    if (state.isLoading) {
-        return (
-          <View style={styles.preloader}>
-            <ActivityIndicator size="large" color={Colors.primary} />
-          </View>
-        );
-      }
     
     return (
         <View style={styles.container}>
@@ -230,7 +223,11 @@ const SignUpScreen = ({ navigation }) => {
             <Picker.Item label="Community Person" value="community_person" />
           </Picker>
       
-
+          {state.isLoading ?  
+              <View style={{marginTop:100}}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+          </View>
+        :
             <View style={styles.button}>
               <TouchableOpacity
                 onPress={signUpHandle}
@@ -250,7 +247,7 @@ const SignUpScreen = ({ navigation }) => {
                 ]}>
                 <Text style={[styles.textSign, { color: Colors.primary }]}>SignIn</Text>
               </TouchableOpacity>
-            </View>
+            </View>}
           </View>
         </View>
       );
