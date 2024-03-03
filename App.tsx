@@ -8,6 +8,18 @@ import HomeScreen from './src/screens/Dashboard/HomeScreen';
 import SignInScreen from './src/screens/authentication/SignInScreen';
 import SignUpScreen from './src/screens/authentication/SignUpScreen';
 
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
+const Drawer = createDrawerNavigator();
+
+function MyDrawer() {
+    return (
+        <Drawer.Navigator>
+            <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        </Drawer.Navigator>
+    );
+}
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -17,10 +29,10 @@ function App() {
         screenOptions={{
           headerShown: false,
       }}>
-        
+
         <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
         <Stack.Screen  name="SignInScreen" component={SignInScreen} />
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="MyDrawer" component={MyDrawer} />
 
       </Stack.Navigator>
     </NavigationContainer>

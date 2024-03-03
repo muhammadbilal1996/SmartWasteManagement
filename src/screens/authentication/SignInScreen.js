@@ -116,7 +116,7 @@ const SignInScreen = ({ navigation }) => {
               isValidUser: true,
               isValidPassword: true,
             });
-            navigation.navigate('HomeScreen');
+            navigation.navigate('MyDrawer');
           })
           .catch((error) => {
             if (error.code === 'auth/wrong-password') {
