@@ -9,7 +9,7 @@ import {Picker} from '@react-native-picker/picker';
 //import * as firebase from 'firebase';
 import auth from '@react-native-firebase/auth';
 import Snackbar from 'react-native-snackbar';
-import { Colors } from '../utills/Colors';
+import { Colors } from '../../utills/Colors';
 const SignUpScreen = ({ navigation }) => {
     const [state, setState] = useState({
       displayName: '',
@@ -115,7 +115,7 @@ const SignUpScreen = ({ navigation }) => {
               isValidUser: true,
               isValidPassword: true,
             });
-           // navigation.navigate('SignInScreen');
+            navigation.navigate('SignInScreen');
           })
         }).catch(error => {
           if (error.code === 'auth/weak-password') {
