@@ -9,6 +9,7 @@ import SignInScreen from './src/screens/authentication/SignInScreen';
 import SignUpScreen from './src/screens/authentication/SignUpScreen';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import DrawerNavigator from "./src/routes/DrawerNavigator";
 
 const Drawer = createDrawerNavigator();
 
@@ -32,7 +33,7 @@ function App() {
 
         <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
         <Stack.Screen  name="SignInScreen" component={SignInScreen} />
-        <Stack.Screen name="MyDrawer" component={MyDrawer} />
+        <Stack.Screen name="MyDrawer" component={DrawerNavigator} />
 
       </Stack.Navigator>
     </NavigationContainer>
