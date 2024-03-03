@@ -4,7 +4,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import database from '@react-native-firebase/database';
+import SignUpScreen from './src/screens/Signup';
 
 
 const App = () =>{
@@ -12,8 +12,8 @@ const App = () =>{
 
 
   return (
-        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-         <Text style={{color:'black'}}>Hello World</Text>
+        <View style={{flex:1}}>
+        <SignUpScreen/>
         </View>
   );
 
