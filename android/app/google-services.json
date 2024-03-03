@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "150087705974",
+    "project_id": "wastemanagement-8f65c",
+    "storage_bucket": "wastemanagement-8f65c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150087705974:android:f5d2c683977db77b70c657",
+        "android_client_info": {
+          "package_name": "com.smartwastemanagement"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0e6WU3PTgCwrdgt9KTRwE2QEsQaPf98w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
