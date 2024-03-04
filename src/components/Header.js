@@ -22,7 +22,7 @@ const header = props => {
 
 const styles = StyleSheet.create({
     mainContainer: {
-        paddingBottom: 16,
+        paddingVertical: 8
     },
     title: {
         fontSize: 18,
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         fontWeight: '600'
     },
     button: {
-        padding: 15,
+        padding: 12,
     },
     iconContainer: {
         flexDirection: 'row',
