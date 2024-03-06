@@ -10,6 +10,7 @@ import SignUpScreen from './src/screens/authentication/SignUpScreen';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerNavigator from "./src/routes/DrawerNavigator";
+import SplashScreen from "./src/screens/splash/SplashScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -30,7 +31,7 @@ function App() {
         screenOptions={{
           headerShown: false,
       }}>
-
+          <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
         <Stack.Screen  name="SignInScreen" component={SignInScreen} />
         <Stack.Screen name="MyDrawer" component={DrawerNavigator} />

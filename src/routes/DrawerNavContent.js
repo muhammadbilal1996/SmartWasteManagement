@@ -24,9 +24,6 @@ const DrawerNavContent = props => {
     return (
         <View style={styles.mainContainer}>
             <View style={styles.drawerIconSection}>
-                {/*<TouchableOpacity onPress={() => handleNavigation('ProfileActivity')}>*/}
-                {/*    <svg.avatar height={100} width={100} />*/}
-                {/*</TouchableOpacity>*/}
                 <Image
                     style={styles.stretch}
                     source={require('../assets/images/avatar.png')}
