@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View,
     StyleSheet,
@@ -18,6 +18,16 @@ const windowHeight = Dimensions.get('window').height;
 
 const DrawerNavContent = props => {
     const [isActive, setIsActive] = useState('HomeScreen');
+    const [userDetails, setUserDetails] = useState({});
+    const getUserDetails = async () => {
+        return await constants.storage.get('userDetails');
+    };
+    useEffect(() => {
+        getUserDetails().then(res => {
+            console.log(JSON.stringify(res))
+            setUserDetails(res);
+        })
+    }, []);
     const handleNavigation = route => {
         setIsActive(route);
         props.navigation.navigate(route);
@@ -44,7 +54,7 @@ const DrawerNavContent = props => {
                         color: 'black',
                         fontFamily: 'Inter-Medium',
                     }}>
-                    joendeo@gmail.com
+                    {userDetails?.user?.email}
                 </Text>
                 <Text
                     style={{
