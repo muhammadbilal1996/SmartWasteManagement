@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Dimensions, Image} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -11,30 +11,33 @@ const windowHeight = Dimensions.get('window').height;
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const [userLocation, setUserLocation] = useState(null);
-
-  useEffect(() => {
-    // Get user's live location
-    // Geolocation.getCurrentPosition(
-    //     position => {
-    //       console.log(position)
-    //       setUserLocation({
-    //         latitude: position.coords.latitude,
-    //         longitude: position.coords.longitude,
-    //         latitudeDelta: 0.0922,
-    //         longitudeDelta: 0.0421,
-    //       });
-    //     },
-    //     error => console.log(error.message),
-    //     { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    //
-    // );
-    setUserLocation({
+  const [userLocation, setUserLocation] = useState({
       latitude: 33.684051,
       longitude:  72.981572,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
-    })
+  });
+    const binsMarkers = [
+        { id: 1, title: 'Bin 1', latitude: 33.684051, longitude: 72.981572 },
+        { id: 2, title: 'Bin 2', latitude: 33.70008310458884, longitude: 72.97041416659074 },
+        { id: 3, title: 'Bin 3', latitude: 33.69197801360682 , longitude: 73.02320003804257 },
+    ];
+    const [markers, setMarkers] = useState([]);
+
+  useEffect(() => {
+    // Get user's live location
+      Geolocation.getCurrentPosition((success)=>{
+          console.log(success);
+          setUserLocation({
+              latitude: success.coords.latitude,
+              longitude: success.coords.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+          })
+          setMarkers([...binsMarkers,{ id: binsMarkers.length + 1, title: 'User Location', latitude: success.coords.latitude , longitude: success.coords.longitude } ])
+      },
+          (e)=>{console.log(e)},
+          {timeout: 20000});
   }, []);
 
   return (
@@ -47,13 +50,18 @@ const HomeScreen = () => {
                 style={styles.map}
                 initialRegion={userLocation}
             >
-              <Marker
-                  coordinate={{
-                    latitude: userLocation.latitude,
-                    longitude: userLocation.longitude,
-                  }}
-                  title="You are here"
-              />
+                {markers.map(marker => (
+                    <Marker
+                        key={marker.id}
+                        coordinate={{
+                            latitude: marker.latitude,
+                            longitude: marker.longitude,
+                        }}
+                        title={marker.title}
+                        pinColor={marker.title !== 'User Location' ? "#0097C9" : 'red'}
+                    >
+                    </Marker>
+                ))}
             </MapView>
         )}
         <View style={styles.bottomSheet}>

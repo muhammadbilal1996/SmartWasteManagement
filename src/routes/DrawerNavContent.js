@@ -24,7 +24,6 @@ const DrawerNavContent = props => {
     };
     useEffect(() => {
         getUserDetails().then(res => {
-            console.log(JSON.stringify(res))
             setUserDetails(res);
         })
     }, []);
