@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/FontAwesome'
+import {Colors} from "../utills/Colors";
 
 const header = props => {
     const navigation = useNavigation();
@@ -22,7 +23,7 @@ const header = props => {
 
 const styles = StyleSheet.create({
     mainContainer: {
-        paddingVertical: 8
+        paddingVertical: 8,
     },
     title: {
         fontSize: 18,

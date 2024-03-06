@@ -10,6 +10,7 @@ import {
 import HistoryScreen from "../screens/History/HistoryScreen";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
 import Icon from 'react-native-vector-icons/FontAwesome'
+import {Colors} from "../utills/Colors";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     mainContainer: {
         width: undefined,
         height: (windowHeight / 100) * 100,
-        backgroundColor: '#58A92B'
+        backgroundColor:Colors.primary,
     },
     stretch: {
         width: 100,
