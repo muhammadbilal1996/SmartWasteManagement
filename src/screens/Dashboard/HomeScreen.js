@@ -27,7 +27,6 @@ const HomeScreen = () => {
   useEffect(() => {
     // Get user's live location
       Geolocation.getCurrentPosition((success)=>{
-          console.log(success);
           setUserLocation({
               latitude: success.coords.latitude,
               longitude: success.coords.longitude,
