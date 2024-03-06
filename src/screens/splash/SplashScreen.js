@@ -10,11 +10,13 @@ const SplashScreen = ({navigation}) => {
     };
     useEffect(() => {
         isLogIn().then(res => {
-            if (res) {
-                navigation.replace('MyDrawer');
-            } else {
-                navigation.replace('SignUpScreen');
-            }
+            setTimeout(() => {
+                if (res) {
+                    navigation.replace('MyDrawer');
+                } else {
+                    navigation.replace('SignUpScreen');
+                }
+            }, 3000)
         } );
     }, [navigation]);
     return (

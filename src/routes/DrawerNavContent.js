@@ -11,6 +11,7 @@ import HistoryScreen from "../screens/History/HistoryScreen";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
 import Icon from 'react-native-vector-icons/FontAwesome'
 import {Colors} from "../utills/Colors";
+import constants from "../constants";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -67,9 +68,6 @@ const DrawerNavContent = props => {
                             : styles.screenContainer
                     }>
                     <Icon style={{marginLeft: 8}} name="home" size={24} color="#C8C8C8" />
-                    {/*<View style={styles.ButtonIconConatiner}>*/}
-                    {/*    <svg.homeWhite width={24} height={24} fill={color.white} />*/}
-                    {/*</View>*/}
                     <Text style={styles.screenTitle}>Dashboard</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -84,9 +82,6 @@ const DrawerNavContent = props => {
                             : styles.screenContainer
                     }>
                     <Icon style={{marginLeft: 8}} name="user-circle" size={24} color="#C8C8C8" />
-                    {/*<View style={styles.ButtonIconConatiner}>*/}
-                    {/*    <svg.homeWhite width={24} height={24} fill={color.white} />*/}
-                    {/*</View>*/}
                     <Text style={styles.screenTitle}>ProfileScreen</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -100,9 +95,6 @@ const DrawerNavContent = props => {
                             ]
                             : styles.screenContainer
                     }>
-                    {/*<View style={styles.ButtonIconConatiner}>*/}
-                    {/*    <svg.homeWhite width={24} height={24} fill={color.white} />*/}
-                    {/*</View>*/}
                     <Icon style={{marginLeft: 8}} name="history" size={24} color="#C8C8C8" />
                     <Text style={styles.screenTitle}>HistoryScreen</Text>
                 </TouchableOpacity>
@@ -117,11 +109,18 @@ const DrawerNavContent = props => {
                             ]
                             : styles.screenContainer
                     }>
-                    {/*<View style={styles.ButtonIconConatiner}>*/}
-                    {/*    <svg.homeWhite width={24} height={24} fill={color.white} />*/}
-                    {/*</View>*/}
                     <Icon style={{marginLeft: 8}} name="exclamation-triangle" size={24} color="#C8C8C8" />
                     <Text style={styles.screenTitle}>ReportScreen</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        constants.storage.remove('userDetails');
+                        props.navigation.replace('SignInScreen')
+                    }}
+                    activeOpacity={0.8}
+                    style={styles.logoutContainer}>
+                    <Icon style={{marginLeft: 8}} name="sign-out" size={24} color="#C8C8C8" />
+                    <Text style={[styles.screenTitle, {color: 'white', fontSize: 16}]}>Logout</Text>
                 </TouchableOpacity>
 
             </View>
@@ -148,6 +147,7 @@ const styles = StyleSheet.create({
         marginRight: 15,
     },
     drawerSectionContainer: {
+        flex: 1,
         marginTop: 10,
         flexDirection: 'column',
         marginRight: 15,
@@ -170,6 +170,18 @@ const styles = StyleSheet.create({
     ButtonIconConatiner: {
         padding: 15,
         marginLeft: 10,
+    },
+    logoutContainer: {
+        position: 'absolute',
+        borderTopRightRadius: 50,
+        borderBottomRightRadius: 50,
+        bottom: 12,
+        height: (windowHeight / 100) * 6,
+        width: (windowWidth / 100) * 65,
+        flexDirection: 'row',
+        alignItems: 'center',
+        margin: 2,
+        backgroundColor: 'red'
     },
 });
 
