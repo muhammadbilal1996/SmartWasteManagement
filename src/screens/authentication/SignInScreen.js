@@ -9,6 +9,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import auth from '@react-native-firebase/auth';
 import Snackbar from 'react-native-snackbar';
 import { Colors } from '../../utills/Colors';
+import constants from "../../constants";
 
 
 const SignInScreen = ({ navigation }) => {
@@ -93,6 +94,7 @@ const SignInScreen = ({ navigation }) => {
           .then((res) => {
 
             console.log("res...............",res)
+            constants.storage.set('userDetails', res);
           //  AsyncStorage.multiSet([
             //  ['user_name', res.user.email],
              // ['user_token', res.user.uid],
@@ -116,7 +118,7 @@ const SignInScreen = ({ navigation }) => {
               isValidUser: true,
               isValidPassword: true,
             });
-            navigation.navigate('HomeScreen');
+            navigation.replace('MyDrawer');
           })
           .catch((error) => {
             if (error.code === 'auth/wrong-password') {
