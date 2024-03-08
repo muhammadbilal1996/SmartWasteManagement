@@ -20,14 +20,16 @@ const HomeScreen = () => {
                 const deviceToken = await messaging().getToken();
                 console.log('deviceToken', deviceToken);
                 await constants.storage.set('deviceId', deviceToken);
+            } else {
+                sendNotification(res)
             }
         })
     }, []);
-    const sendNotification =() => {
+    const sendNotification =(id) => {
         const serverKey = 'AAAAIvHspXY:APA91bF2Y-ObywRBdDtn2s4JMrnBRzYZ_fMdC0_oZA13vT_W2otNW8y1alUzeYQIuSkL9zofiMxRxM777VXf0Qd9H8eFcXjsCfAMULFS0Tu0lABB9Z9CnMuu8JfZ5EsP67c_mamxf6nX';
         const fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
         const message = {
-            to: 'erVRk-lRTyqIZdtSSxIDGb:APA91bHTjVDaDPr8sDCPbFnx4h73pk6Bbk2h64aFQ_aHd4oFVadxwZXt--EPIkPHj_M0TvnEfBYhCwMWTX8ZLbHFlAj6j6PXo9tbVADT6JsYlxw9L3k7QCGJxWtTT-CFqf6r13wvb-E3',
+            to: id,
             notification: {
                 title: 'Title of Your Notification',
                 body: 'Body of Your Notification',
