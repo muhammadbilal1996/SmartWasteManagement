@@ -6,11 +6,46 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import {useNavigation} from "@react-navigation/native";
 import {Colors} from "../../utills/Colors";
 import LinearGradient from "react-native-linear-gradient";
+import constants from "../../constants";
+import messaging from "@react-native-firebase/messaging";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+import axios from 'axios';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+    useEffect(() => {
+        constants.storage.get('deviceId').then(async res => {
+            if (res === undefined) {
+                const deviceToken = await messaging().getToken();
+                console.log('deviceToken', deviceToken);
+                await constants.storage.set('deviceId', deviceToken);
+            }
+        })
+    }, []);
+    const sendNotification =() => {
+        const serverKey = 'AAAAIvHspXY:APA91bF2Y-ObywRBdDtn2s4JMrnBRzYZ_fMdC0_oZA13vT_W2otNW8y1alUzeYQIuSkL9zofiMxRxM777VXf0Qd9H8eFcXjsCfAMULFS0Tu0lABB9Z9CnMuu8JfZ5EsP67c_mamxf6nX';
+        const fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
+        const message = {
+            to: 'erVRk-lRTyqIZdtSSxIDGb:APA91bHTjVDaDPr8sDCPbFnx4h73pk6Bbk2h64aFQ_aHd4oFVadxwZXt--EPIkPHj_M0TvnEfBYhCwMWTX8ZLbHFlAj6j6PXo9tbVADT6JsYlxw9L3k7QCGJxWtTT-CFqf6r13wvb-E3',
+            notification: {
+                title: 'Title of Your Notification',
+                body: 'Body of Your Notification',
+            },
+        };
+        axios.post(fcmEndpoint, message, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `key=${serverKey}`,
+            },
+        })
+            .then(response => {
+                console.log('Notification sent successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error sending notification:', error);
+            });
+    }
   const [userLocation, setUserLocation] = useState({
       latitude: 33.684051,
       longitude:  72.981572,
