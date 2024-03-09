@@ -72,12 +72,12 @@ const DrawerNavContent = props => {
                         isActive === 'HomeScreen'
                             ? [
                                 styles.screenContainer,
-                                {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
+                                {backgroundColor:Colors.primary_Light},
                             ]
                             : styles.screenContainer
                     }>
                     <Icon style={{marginLeft: 8}} name="home" size={24} color="#C8C8C8" />
-                    <Text style={styles.screenTitle}>Dashboard</Text>
+                    <Text style={{...styles.screenTitle,color:  isActive === 'HomeScreen' ? Colors.white:Colors.black}}>Dashboard</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => handleNavigation('ProfileScreen')}
@@ -86,12 +86,12 @@ const DrawerNavContent = props => {
                         isActive === 'ProfileScreen'
                             ? [
                                 styles.screenContainer,
-                                {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
+                                {backgroundColor: Colors.primary_Light},
                             ]
                             : styles.screenContainer
                     }>
                     <Icon style={{marginLeft: 8}} name="user-circle" size={24} color="#C8C8C8" />
-                    <Text style={styles.screenTitle}>ProfileScreen</Text>
+                    <Text style={{...styles.screenTitle,color:  isActive === 'ProfileScreen' ? Colors.white:Colors.black}}>ProfileScreen</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => handleNavigation('HistoryScreen')}
@@ -100,12 +100,12 @@ const DrawerNavContent = props => {
                         isActive === 'HistoryScreen'
                             ? [
                                 styles.screenContainer,
-                                {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
+                                {backgroundColor: Colors.primary_Light},
                             ]
                             : styles.screenContainer
                     }>
                     <Icon style={{marginLeft: 8}} name="history" size={24} color="#C8C8C8" />
-                    <Text style={styles.screenTitle}>HistoryScreen</Text>
+                    <Text style={{...styles.screenTitle,color:  isActive === 'HistoryScreen' ? Colors.white:Colors.black}}>HistoryScreen</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => handleNavigation('BinsStatusScreen')}
@@ -114,12 +114,12 @@ const DrawerNavContent = props => {
                         isActive === 'BinsStatusScreen'
                             ? [
                                 styles.screenContainer,
-                                {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
+                                {backgroundColor: Colors.primary_Light},
                             ]
                             : styles.screenContainer
                     }>
                     <Icon style={{marginLeft: 8}} name="trash" size={24} color="#C8C8C8" />
-                    <Text style={styles.screenTitle}>Bins Status</Text>
+                    <Text style={{...styles.screenTitle,color:  isActive === 'BinsStatusScreen' ? Colors.white:Colors.black}}>Bins Status</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => handleNavigation('ReportScreen')}
@@ -128,12 +128,12 @@ const DrawerNavContent = props => {
                         isActive === 'ReportScreen'
                             ? [
                                 styles.screenContainer,
-                                {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
+                                {backgroundColor: Colors.primary_Light},
                             ]
                             : styles.screenContainer
                     }>
                     <Icon style={{marginLeft: 8}} name="exclamation-triangle" size={24} color="#C8C8C8" />
-                    <Text style={styles.screenTitle}>ReportScreen</Text>
+                    <Text style={{...styles.screenTitle,color:  isActive === 'ReportScreen' ? Colors.white:Colors.black}}>ReportScreen</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     mainContainer: {
         width: undefined,
         height: (windowHeight / 100) * 100,
-        backgroundColor:Colors.primary,
+        backgroundColor:Colors.white,
     },
     stretch: {
         width: 100,
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
         margin: 2,
     },
     screenTitle: {
-        fontSize: 14,
+        fontSize: 16,
         fontFamily: 'DMSans-Medium',
         paddingBottom: 2,
         marginLeft: 12,
