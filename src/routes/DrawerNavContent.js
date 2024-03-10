@@ -108,6 +108,20 @@ const DrawerNavContent = props => {
                     <Text style={{...styles.screenTitle,color:  isActive === 'HistoryScreen' ? Colors.white:Colors.black}}>HistoryScreen</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                    onPress={() => handleNavigation('LiveTracking')}
+                    activeOpacity={0.8}
+                    style={
+                        isActive === 'LiveTracking'
+                            ? [
+                                styles.screenContainer,
+                                {backgroundColor: Colors.primary_Light},
+                            ]
+                            : styles.screenContainer
+                    }>
+                    <Icon style={{marginLeft: 8}} name="history" size={24} color="#C8C8C8" />
+                    <Text style={{...styles.screenTitle,color:  isActive === 'LiveTracking' ? Colors.white:Colors.black}}>Live Tracking</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                     onPress={() => handleNavigation('BinsStatusScreen')}
                     activeOpacity={0.8}
                     style={
