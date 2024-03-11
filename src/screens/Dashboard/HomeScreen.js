@@ -6,9 +6,11 @@ import {
   TouchableOpacity,
   Dimensions,
   PermissionsAndroid,
+  Text,
 } from 'react-native';
 import MapView, {Marker, Polyline} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
+import Icon from "react-native-vector-icons/FontAwesome";
 import {useNavigation} from '@react-navigation/native';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -197,10 +199,12 @@ const HomeScreen = () => {
         activeOpacity={0.8}
         style={styles.menu}
         onPress={() => navigation.openDrawer()}>
-        {/* Add your menu icon here */}
+           <Icon name="bars" size={20} color="#000" />
       </TouchableOpacity>
       {loading ? (
-        <ActivityIndicator size="large" color="blue" style={styles.loader} /> // Show loader if loading is true
+        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+        <ActivityIndicator size="large" color="blue" style={styles.loader} />
+        </View>
       ) : (
         userLocation && (
           <MapView style={styles.map} initialRegion={userLocation}>
