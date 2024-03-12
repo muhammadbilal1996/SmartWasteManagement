@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, FlatList} from 'react-native';
 import Header from '../../components/Header';
 import database from '@react-native-firebase/database';
 import MapView, {Marker} from 'react-native-maps';
+import LottieView from 'lottie-react-native';
 
 const BinsStatusScreen = () => {
   const [binsData, setBinsData] = useState([]);
@@ -37,12 +38,33 @@ const BinsStatusScreen = () => {
           title={item.binName}
         />
       </MapView>
-      <View style={{padding: 12, justifyContent: 'center'}}>
-        <Text style={styles.itemName}>{item?.binName}</Text>
-        <Text style={styles.itemDetails}>
-          Location: {item?.binLocation} {'\n'}
-          Status: {item?.binStatus}
-        </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <View style={{padding: 12, justifyContent: 'center'}}>
+          <Text style={styles.itemName}>{item?.binName}</Text>
+          <Text style={styles.itemDetails}>
+            Location: {item?.binLocation} {'\n'}
+            Status: {item?.binStatus}
+          </Text>
+        </View>
+        {item?.binStatus === 'filled' && (
+          <LottieView
+            source={require('../../assets/animation/recycle.json')}
+            autoPlay
+            loop
+            style={{
+              height: 48,
+              width: 48,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginRight: 12,
+            }}
+          />
+        )}
       </View>
     </View>
   );

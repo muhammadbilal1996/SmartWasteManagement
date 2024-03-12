@@ -110,7 +110,7 @@ const DrawerNavContent = props => {
           />
           <Text style={styles.screenTitle}>ProfileScreen</Text>
         </TouchableOpacity>
-        {userDetails.userType === 'collector' && (
+        {userDetails?.userType === 'collector' && (
           <TouchableOpacity
             onPress={() => handleNavigation('HistoryScreen')}
             activeOpacity={0.8}
@@ -150,7 +150,7 @@ const DrawerNavContent = props => {
           />
           <Text style={styles.screenTitle}>Bins Status</Text>
         </TouchableOpacity>
-        {userDetails.userType === 'collector' && (
+        {userDetails?.userType === 'collector' && (
           <TouchableOpacity
             onPress={() => handleNavigation('ReportScreen')}
             activeOpacity={0.8}
