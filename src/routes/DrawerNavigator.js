@@ -8,6 +8,7 @@ import ProfileScreen from "../screens/Profile/ProfileScreen";
 import ReportScreen from "../screens/Report/ReportScreen";
 import BinsStatusScreen from "../screens/Bins/BinsStatusScreen";
 import LiveTracking from '../screens/liveTracking/LiveTracking';
+import FeedbackScreen from "../screens/feedback/FeedbackScreen";
 
 
 const Drawer = createDrawerNavigator();
@@ -24,6 +25,7 @@ const MainStackNavigator = () => {
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
             <Stack.Screen name="ReportScreen" component={ReportScreen} />
             <Stack.Screen name="BinsStatusScreen" component={BinsStatusScreen} />
+            <Stack.Screen name="FeedbackScreen" component={FeedbackScreen} />
             <Stack.Screen name="LiveTracking" component={LiveTracking} />
 
         </Stack.Navigator>
