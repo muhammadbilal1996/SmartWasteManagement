@@ -16,6 +16,7 @@ const RootStack = () => {
             <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
             <Stack.Screen  name="SignInScreen" component={SignInScreen} />
             <Stack.Screen name="MyDrawer" component={DrawerNavigator} />
+
         </Stack.Navigator>
     );
 };
