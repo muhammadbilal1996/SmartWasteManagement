@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import MapView, {Marker, Polyline} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -49,7 +49,7 @@ const HomeScreen = () => {
           getOneTimeLocation();
           subscribeLocationLocation();
         } else {
-          setLocationStatus('Permission Denied');
+          console.log('Permission Denied');
         }
       } catch (err) {
         console.warn(err);
@@ -74,7 +74,7 @@ const HomeScreen = () => {
         setLoading(false);
       },
       error => {
-        setLocationStatus(error.message);
+        console.log(error.message);
       },
       {
         enableHighAccuracy: false,
@@ -96,7 +96,7 @@ const HomeScreen = () => {
         const currentLatitude = JSON.stringify(position.coords.latitude);
       },
       error => {
-        setLocationStatus(error.message);
+        console.log(error.message);
       },
       {
         enableHighAccuracy: false,
@@ -111,7 +111,7 @@ const HomeScreen = () => {
     if (user) {
       // Retrieve bin data for the current user from database
       const binsRef = database()
-        .ref(`bins`)
+        .ref('bins')
         .orderByChild('binCollector')
         .equalTo(user.uid); // Remove .database() from database()
       binsRef.on('value', snapshot => {
@@ -138,72 +138,88 @@ const HomeScreen = () => {
     if (userLocation && markers.length > 0) {
       let nearestDistance = Number.MAX_VALUE;
       let nearestBin = null;
-  
-      markers.forEach((marker) => {
+
+      markers.forEach(marker => {
         if (marker.status === 'filled') {
-          const distance = calculateDistance(userLocation.latitude, userLocation.longitude, marker.latitude, marker.longitude);
+          const distance = calculateDistance(
+            userLocation.latitude,
+            userLocation.longitude,
+            marker.latitude,
+            marker.longitude,
+          );
           if (distance < nearestDistance) {
             nearestDistance = distance;
             nearestBin = marker;
           }
         }
       });
-  
+
       // Set the nearest filled bin
       setNearestFilledBin(nearestBin);
     }
   }, [userLocation, markers]);
-  
+
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371; // Radius of the earth in km
     const dLat = deg2rad(lat2 - lat1);
     const dLon = deg2rad(lon2 - lon1);
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c; // Distance in km
     return distance;
   };
-  
-  const deg2rad = (deg) => {
+
+  const deg2rad = deg => {
     return deg * (Math.PI / 180);
   };
-  
+
   useEffect(() => {
     if (nearestFilledBin) {
       // Draw a polyline from the nearest filled bin to other filled bins
       const polylineCoordinates = [];
-      
+
       // Add user's location coordinates
-      polylineCoordinates.push({ latitude: userLocation.latitude, longitude: userLocation.longitude });
-  
+      polylineCoordinates.push({
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+      });
+
       // Add the nearest filled bin's coordinates
-      polylineCoordinates.push({ latitude: nearestFilledBin.latitude, longitude: nearestFilledBin.longitude });
-  
+      polylineCoordinates.push({
+        latitude: nearestFilledBin.latitude,
+        longitude: nearestFilledBin.longitude,
+      });
+
       // Add other filled bins' coordinates
-      markers.forEach((marker) => {
+      markers.forEach(marker => {
         if (marker.status === 'filled' && marker !== nearestFilledBin) {
-          polylineCoordinates.push({ latitude: marker.latitude, longitude: marker.longitude });
+          polylineCoordinates.push({
+            latitude: marker.latitude,
+            longitude: marker.longitude,
+          });
         }
       });
-  
+
       setPolylineCoordinates(polylineCoordinates);
     }
   }, [userLocation, nearestFilledBin, markers]);
-  
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
         activeOpacity={0.8}
         style={styles.menu}
         onPress={() => navigation.openDrawer()}>
-           <Icon name="bars" size={20} color="#000" />
+        <Icon name="bars" size={20} color="#000" />
       </TouchableOpacity>
       {loading ? (
-        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-        <ActivityIndicator size="large" color="blue" style={styles.loader} />
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color="blue" style={styles.loader} />
         </View>
       ) : (
         userLocation && (
@@ -220,16 +236,14 @@ const HomeScreen = () => {
               />
             )}
 
-              {/* Draw a polyline from the nearest filled bin to other filled bins */}
-        {polylineCoordinates.length > 0 && (
-          <Polyline
-            coordinates={polylineCoordinates}
-            strokeWidth={2}
-            strokeColor="red"
-          />
-        )}
-
-      
+            {/* Draw a polyline from the nearest filled bin to other filled bins */}
+            {polylineCoordinates.length > 0 && (
+              <Polyline
+                coordinates={polylineCoordinates}
+                strokeWidth={2}
+                strokeColor="red"
+              />
+            )}
 
             {/* Place markers for other locations */}
             {markers.map(marker => (

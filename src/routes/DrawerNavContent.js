@@ -12,12 +12,14 @@ import ProfileScreen from '../screens/Profile/ProfileScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Colors} from '../utills/Colors';
 import constants from '../constants';
+import {useDrawerStatus} from "@react-navigation/drawer";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const DrawerNavContent = props => {
   const [isActive, setIsActive] = useState('HomeScreen');
+  const isOpen = useDrawerStatus();
   const [userDetails, setUserDetails] = useState({});
   const getUserDetails = async () => {
     return await constants.storage.get('userDetails');
@@ -26,18 +28,21 @@ const DrawerNavContent = props => {
     getUserDetails().then(res => {
       setUserDetails(res);
     });
-  }, []);
+  }, [isOpen]);
   const handleNavigation = route => {
     setIsActive(route);
     props.navigation.navigate(route);
   };
   const capitalizeWords = str => {
+    if (!str) {
+      return;
+    }
     let words = str.split('_');
     let capitalizedWords = words.map(
       word => word.charAt(0).toUpperCase() + word.slice(1),
     );
     return capitalizedWords.join(' ');
-  }
+  };
   return (
     <View style={styles.mainContainer}>
       <View style={styles.drawerIconSection}>
