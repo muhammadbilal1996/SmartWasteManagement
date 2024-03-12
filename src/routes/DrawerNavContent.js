@@ -12,7 +12,7 @@ import ProfileScreen from '../screens/Profile/ProfileScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Colors} from '../utills/Colors';
 import constants from '../constants';
-import {useDrawerStatus} from "@react-navigation/drawer";
+import {useDrawerStatus} from '@react-navigation/drawer';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -110,25 +110,27 @@ const DrawerNavContent = props => {
           />
           <Text style={styles.screenTitle}>ProfileScreen</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleNavigation('HistoryScreen')}
-          activeOpacity={0.8}
-          style={
-            isActive === 'HistoryScreen'
-              ? [
-                  styles.screenContainer,
-                  {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
-                ]
-              : styles.screenContainer
-          }>
-          <Icon
-            style={{marginLeft: 8}}
-            name="history"
-            size={24}
-            color="#C8C8C8"
-          />
-          <Text style={styles.screenTitle}>HistoryScreen</Text>
-        </TouchableOpacity>
+        {userDetails.userType === 'collector' && (
+          <TouchableOpacity
+            onPress={() => handleNavigation('HistoryScreen')}
+            activeOpacity={0.8}
+            style={
+              isActive === 'HistoryScreen'
+                ? [
+                    styles.screenContainer,
+                    {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
+                  ]
+                : styles.screenContainer
+            }>
+            <Icon
+              style={{marginLeft: 8}}
+              name="history"
+              size={24}
+              color="#C8C8C8"
+            />
+            <Text style={styles.screenTitle}>History Screen</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={() => handleNavigation('BinsStatusScreen')}
           activeOpacity={0.8}
@@ -148,25 +150,27 @@ const DrawerNavContent = props => {
           />
           <Text style={styles.screenTitle}>Bins Status</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleNavigation('ReportScreen')}
-          activeOpacity={0.8}
-          style={
-            isActive === 'ReportScreen'
-              ? [
-                  styles.screenContainer,
-                  {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
-                ]
-              : styles.screenContainer
-          }>
-          <Icon
-            style={{marginLeft: 8}}
-            name="exclamation-triangle"
-            size={24}
-            color="#C8C8C8"
-          />
-          <Text style={styles.screenTitle}>ReportScreen</Text>
-        </TouchableOpacity>
+        {userDetails.userType === 'collector' && (
+          <TouchableOpacity
+            onPress={() => handleNavigation('ReportScreen')}
+            activeOpacity={0.8}
+            style={
+              isActive === 'ReportScreen'
+                ? [
+                    styles.screenContainer,
+                    {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
+                  ]
+                : styles.screenContainer
+            }>
+            <Icon
+              style={{marginLeft: 8}}
+              name="exclamation-triangle"
+              size={24}
+              color="#C8C8C8"
+            />
+            <Text style={styles.screenTitle}>Report Screen</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={() => {
             constants.storage.remove('userDetails');
