@@ -4,6 +4,7 @@ import Header from '../../components/Header';
 import database from '@react-native-firebase/database';
 import MapView, {Marker} from 'react-native-maps';
 import LottieView from 'lottie-react-native';
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const BinsStatusScreen = () => {
   const [binsData, setBinsData] = useState([]);
@@ -52,18 +53,21 @@ const BinsStatusScreen = () => {
           </Text>
         </View>
         {item?.binStatus === 'filled' && (
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                <Icon style={{marginRight: -30, marginBottom: 8}} name="trash" size={48} color="#C8C8C8" />
           <LottieView
             source={require('../../assets/animation/recycle.json')}
             autoPlay
             loop
             style={{
-              height: 48,
-              width: 48,
+              height: 24,
+              width: 24,
               justifyContent: 'center',
               alignItems: 'center',
               marginRight: 12,
             }}
           />
+            </View>
         )}
       </View>
     </View>
@@ -105,6 +109,7 @@ const styles = StyleSheet.create({
   },
   itemDetails: {
     fontSize: 14,
+      color: 'black'
   },
 });
 
