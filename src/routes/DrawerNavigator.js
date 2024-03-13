@@ -9,6 +9,7 @@ import BinsStatusScreen from "../screens/Bins/BinsStatusScreen";
 import LiveTracking from '../screens/liveTracking/LiveTracking';
 import FeedbackScreen from "../screens/feedback/FeedbackScreen";
 import ComplainScreen from '../screens/Complain/ComplainScreen';
+import WasteBin from '../screens/Bins/ViewBins';
 
 
 const Drawer = createDrawerNavigator();
@@ -23,6 +24,8 @@ const MainStackNavigator = () => {
             <Stack.Screen name="HomeScreen" component={HomeScreen} />
             <Stack.Screen name="HistoryScreen" component={HistoryScreen} />
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+            <Stack.Screen name="ViewBin" component={WasteBin} />
+
             <Stack.Screen name="ComplainScreen"
             
             options={{

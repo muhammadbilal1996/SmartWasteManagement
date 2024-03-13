@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
 import Header from '../../components/Header';
 import database from '@react-native-firebase/database';
 import MapView, {Marker} from 'react-native-maps';
 import LottieView from 'lottie-react-native';
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const BinsStatusScreen = () => {
+const BinsStatusScreen = ({navigation}) => {
   const [binsData, setBinsData] = useState([]);
   useEffect(() => {
     database()
@@ -18,7 +18,8 @@ const BinsStatusScreen = () => {
 
   // Rendering each historical event item
   const renderItem = ({item}) => (
-    <View
+    <TouchableOpacity
+    onPress={()=>navigation.navigate('ViewBin')}
       style={[
         styles.itemContainer,
         {borderColor: item?.binStatus === 'filled' ? 'red' : 'green'},
@@ -70,7 +71,7 @@ const BinsStatusScreen = () => {
             </View>
         )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
