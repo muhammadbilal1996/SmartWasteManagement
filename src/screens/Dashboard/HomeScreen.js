@@ -16,7 +16,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
-import { Colors } from '../../utills/Colors';
+import {Colors} from '../../utills/Colors';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -34,6 +34,28 @@ const HomeScreen = () => {
     longitudeDelta: 0.0421,
   });
 
+  const [userDetails, setUserDetails] = useState({});
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const user = auth().currentUser;
+        if (user) {
+          const userSnapshot = await database()
+            .ref('users/' + user.uid)
+            .once('value');
+          const userData = userSnapshot.val();
+          setUserDetails(userData);
+        } else {
+          console.log('No user is currently logged in.');
+        }
+      } catch (error) {
+        console.error('Error fetching user details: ', error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
   useEffect(() => {
     const requestLocationPermission = async () => {
       try {
@@ -47,7 +69,6 @@ const HomeScreen = () => {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           //To Check, If Permission is granted
           getOneTimeLocation();
-         
         } else {
           console.log('Permission Denied');
         }
@@ -62,12 +83,12 @@ const HomeScreen = () => {
     Geolocation.getCurrentPosition(
       //Will give you the current location
       position => {
-setUserLocation({
-  latitude: position.coords.latitude,
-  longitude: position.coords.longitude,
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
-})
+        setUserLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
         setLoading(false);
       },
       error => {
@@ -80,8 +101,6 @@ setUserLocation({
       },
     );
   };
-
-
 
   useEffect(() => {
     // Check if user is authenticated
@@ -192,8 +211,11 @@ setUserLocation({
     // Implement your navigation logic here
     console.log('Navigate to the next screen');
     console.log('Shortest Polyline Coordinates:', polylineCoordinates);
-    navigation.navigate('LiveTracking',{polylineCoordinates:polylineCoordinates})
+    navigation.navigate('LiveTracking', {
+      polylineCoordinates: polylineCoordinates,
+    });
   };
+  
 
   return (
     <View style={styles.container}>
@@ -205,7 +227,7 @@ setUserLocation({
       </TouchableOpacity>
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color="blue" style={styles.loader} />
+          <ActivityIndicator size="large" color={Colors.primary} style={styles.loader} />
         </View>
       ) : (
         userLocation && (
@@ -218,7 +240,11 @@ setUserLocation({
                   longitude: userLocation.longitude,
                 }}
                 title="Your Location"
-                image={require('../../assets/images/truck.png')} // Set the image for the user location marker
+                image={
+                  userDetails?.userType === 'collector'
+                    ? require('../../assets/images/truck.png')
+                    : require('../../assets/images/user.png')
+                } // Set the image for the user location marker
               />
             )}
 
@@ -251,13 +277,21 @@ setUserLocation({
         )
       )}
 
-       {/* Render "Collect Now" button if nearest filled bin is selected */}
-       {nearestFilledBin && (
+      {/* Render "Collect Now" button if nearest filled bin is selected */}
+      {nearestFilledBin && (
         <TouchableOpacity
-          style={{ position: 'absolute',width:'40%',bottom: 20, alignSelf: 'center',alignItems:'center', padding: 10, backgroundColor: Colors.primary_dark, borderRadius: 5 }}
-          onPress={handleCollectNow}
-        >
-          <Text style={{ color: 'white', fontWeight: 'bold' }}>Collect Now</Text>
+          style={{
+            position: 'absolute',
+            width: '40%',
+            bottom: 20,
+            alignSelf: 'center',
+            alignItems: 'center',
+            padding: 10,
+            backgroundColor: Colors.primary_dark,
+            borderRadius: 5,
+          }}
+          onPress={handleCollectNow}>
+          <Text style={{color: 'white', fontWeight: 'bold'}}>Collect Now</Text>
         </TouchableOpacity>
       )}
     </View>
