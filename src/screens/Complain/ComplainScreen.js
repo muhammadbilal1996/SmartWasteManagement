@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {View, Text, TextInput, Button, Alert, StyleSheet, Keyboard, TouchableOpacity, ImageBackground} from 'react-native';
+import {View, Text, TextInput, Button, Alert, StyleSheet, Keyboard, TouchableOpacity,ImageBackground} from 'react-native';
 import Header from "../../components/Header";
 import {Colors} from "../../utills/Colors";
 import LinearGradient from "react-native-linear-gradient";
@@ -7,14 +7,14 @@ import database from "@react-native-firebase/database";
 import constants from "../../constants";
 import Snackbar from "react-native-snackbar";
 
-const FeedbackScreen = () => {
+const ComplainScreen = () => {
     const [feedback, setFeedback] = useState('');
     const getUserDetails = async () => {
         return await constants.storage.get('userDetails');
     };
     const submitFeedback = () => {
         if (feedback.trim() === '') {
-            Alert.alert('Error', 'Please provide your feedback');
+            Alert.alert('Error', 'Please wirte your issue');
             return;
         }
         getUserDetails().then(res => {
@@ -23,10 +23,10 @@ const FeedbackScreen = () => {
                feedback: feedback,
            }
             database()
-                .ref(`/feedback`)
+                .ref(`/complain`)
                 .push(data);
             Snackbar.show({
-                text: 'Feedback submitted.',
+                text: 'Your complain submitted.',
                 duration: parseInt(2000),
                 action: {
                     text: '',
@@ -52,7 +52,7 @@ const FeedbackScreen = () => {
 
             <TextInput
                 style={styles.input}
-                placeholder={'Enter feedback'}
+                placeholder={'Write your complain'}
                 placeholderTextColor={'#2c2c2c'}
                 multiline
                 numberOfLines={5}
@@ -77,7 +77,7 @@ const FeedbackScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent:'center',
+        justifyContent:'center'
     },
     label: {
         fontSize: 18,
@@ -97,8 +97,8 @@ const styles = StyleSheet.create({
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
+        alignSelf:'center',
         borderRadius: 10,
-        alignSelf:'center'
     },
     textSign: {
         fontSize: 18,
@@ -106,4 +106,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default FeedbackScreen;
+export default ComplainScreen;

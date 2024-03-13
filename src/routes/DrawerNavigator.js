@@ -5,10 +5,10 @@ import HomeScreen from "../screens/Dashboard/HomeScreen";
 import DrawerNavContent from "./DrawerNavContent";
 import HistoryScreen from "../screens/History/HistoryScreen";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
-import ReportScreen from "../screens/Report/ReportScreen";
 import BinsStatusScreen from "../screens/Bins/BinsStatusScreen";
 import LiveTracking from '../screens/liveTracking/LiveTracking';
 import FeedbackScreen from "../screens/feedback/FeedbackScreen";
+import ComplainScreen from '../screens/Complain/ComplainScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -23,9 +23,19 @@ const MainStackNavigator = () => {
             <Stack.Screen name="HomeScreen" component={HomeScreen} />
             <Stack.Screen name="HistoryScreen" component={HistoryScreen} />
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-            <Stack.Screen name="ReportScreen" component={ReportScreen} />
+            <Stack.Screen name="ComplainScreen"
+            
+            options={{
+                headerShown: true,
+                title:'Complain Screen'
+            }}
+            component={ComplainScreen} />
+
             <Stack.Screen name="BinsStatusScreen" component={BinsStatusScreen} />
-            <Stack.Screen name="FeedbackScreen" component={FeedbackScreen} />
+            <Stack.Screen name="FeedbackScreen" options={{
+                headerShown: true,
+                title:'Feedback Screen'
+            }} component={FeedbackScreen} />
             <Stack.Screen name="LiveTracking" component={LiveTracking} />
 
         </Stack.Navigator>

@@ -7,13 +7,11 @@ import {
   Image,
   Text,
 } from 'react-native';
-import HistoryScreen from '../screens/History/HistoryScreen';
-import ProfileScreen from '../screens/Profile/ProfileScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Colors} from '../utills/Colors';
 import constants from '../constants';
 import {useDrawerStatus} from '@react-navigation/drawer';
-
+import LinearGradient from 'react-native-linear-gradient';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -44,7 +42,13 @@ const DrawerNavContent = props => {
     return capitalizedWords.join(' ');
   };
   return (
-    <View style={styles.mainContainer}>
+   
+    <View>
+       <LinearGradient
+    colors={[Colors.primary, Colors.primary_Light]}
+    style={styles.mainContainer}>
+ 
+
       <View style={styles.drawerIconSection}>
         <Image
           style={styles.stretch}
@@ -53,7 +57,7 @@ const DrawerNavContent = props => {
         <Text
           style={{
             fontSize: 16,
-            color: 'black',
+            color: '#ffffff',
             marginTop: 10,
             fontFamily: 'Inter-SemiBold',
           }}>
@@ -62,7 +66,7 @@ const DrawerNavContent = props => {
         <Text
           style={{
             fontSize: 16,
-            color: 'black',
+            color: 'white',
             fontFamily: 'Inter-Medium',
           }}>
           {userDetails?.userEmail}
@@ -70,7 +74,7 @@ const DrawerNavContent = props => {
         <Text
           style={{
             fontSize: 14,
-            color: 'black',
+            color: 'white',
             fontFamily: 'Inter-SemiBold',
           }}>
           {`User Role: ${capitalizeWords(userDetails?.userType)}`}
@@ -152,10 +156,10 @@ const DrawerNavContent = props => {
         </TouchableOpacity>
         {userDetails?.userType === 'collector' && (
           <TouchableOpacity
-            onPress={() => handleNavigation('ReportScreen')}
+            onPress={() => handleNavigation('ComplainScreen')}
             activeOpacity={0.8}
             style={
-              isActive === 'ReportScreen'
+              isActive === 'ComplainScreen'
                 ? [
                     styles.screenContainer,
                     {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
@@ -168,7 +172,7 @@ const DrawerNavContent = props => {
               size={24}
               color="#C8C8C8"
             />
-            <Text style={styles.screenTitle}>Report Screen</Text>
+            <Text style={styles.screenTitle}>Report an Issue</Text>
           </TouchableOpacity>
         )}
         {userDetails?.userType === 'collector' && (
@@ -210,6 +214,7 @@ const DrawerNavContent = props => {
           </Text>
         </TouchableOpacity>
       </View>
+      </LinearGradient>
     </View>
   );
 };
@@ -249,6 +254,7 @@ const styles = StyleSheet.create({
   },
   screenTitle: {
     fontSize: 14,
+    color:'#ffffff',
     fontFamily: 'DMSans-Medium',
     paddingBottom: 2,
     marginLeft: 12,

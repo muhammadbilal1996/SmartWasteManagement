@@ -16,12 +16,14 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import { Colors } from '../../utills/Colors';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   //const [userLocation, setUserLocation] = useState(null); // Initialize userLocation as null
   const [loading, setLoading] = useState(true); // Initialize loading state
   const [markers, setMarkers] = useState([]);
+
   const [nearestFilledBin, setNearestFilledBin] = useState(null); // State to store the nearest filled bin
   const [polylineCoordinates, setPolylineCoordinates] = useState([]); // State to store the polyline coordinates
 
@@ -31,8 +33,6 @@ const HomeScreen = () => {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
-
-  let watchID; // Declare watchID here
 
   useEffect(() => {
     const requestLocationPermission = async () => {
@@ -47,7 +47,7 @@ const HomeScreen = () => {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           //To Check, If Permission is granted
           getOneTimeLocation();
-          subscribeLocationLocation();
+         
         } else {
           console.log('Permission Denied');
         }
@@ -56,21 +56,18 @@ const HomeScreen = () => {
       }
     };
     requestLocationPermission();
-    return () => {
-      Geolocation.clearWatch(watchID);
-    };
   }, []);
 
   const getOneTimeLocation = () => {
     Geolocation.getCurrentPosition(
       //Will give you the current location
       position => {
-        //getting the Longitude from the location json
-        const currentLongitude = JSON.stringify(position.coords.longitude);
-
-        //getting the Latitude from the location json
-        const currentLatitude = JSON.stringify(position.coords.latitude);
-
+setUserLocation({
+  latitude: position.coords.latitude,
+  longitude: position.coords.longitude,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+})
         setLoading(false);
       },
       error => {
@@ -84,26 +81,7 @@ const HomeScreen = () => {
     );
   };
 
-  const subscribeLocationLocation = () => {
-    watchID = Geolocation.watchPosition(
-      position => {
-        console.log(position);
 
-        //getting the Longitude from the location json
-        const currentLongitude = JSON.stringify(position.coords.longitude);
-
-        //getting the Latitude from the location json
-        const currentLatitude = JSON.stringify(position.coords.latitude);
-      },
-      error => {
-        console.log(error.message);
-      },
-      {
-        enableHighAccuracy: false,
-        maximumAge: 1000,
-      },
-    );
-  };
 
   useEffect(() => {
     // Check if user is authenticated
@@ -209,6 +187,14 @@ const HomeScreen = () => {
     }
   }, [userLocation, nearestFilledBin, markers]);
 
+  const handleCollectNow = () => {
+    // Navigate to the next screen with the shortest polyline coordinates
+    // Implement your navigation logic here
+    console.log('Navigate to the next screen');
+    console.log('Shortest Polyline Coordinates:', polylineCoordinates);
+    navigation.navigate('LiveTracking',{polylineCoordinates:polylineCoordinates})
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -263,6 +249,16 @@ const HomeScreen = () => {
             ))}
           </MapView>
         )
+      )}
+
+       {/* Render "Collect Now" button if nearest filled bin is selected */}
+       {nearestFilledBin && (
+        <TouchableOpacity
+          style={{ position: 'absolute',width:'40%',bottom: 20, alignSelf: 'center',alignItems:'center', padding: 10, backgroundColor: Colors.primary_dark, borderRadius: 5 }}
+          onPress={handleCollectNow}
+        >
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>Collect Now</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
