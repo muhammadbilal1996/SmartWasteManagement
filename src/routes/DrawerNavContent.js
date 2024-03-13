@@ -12,6 +12,9 @@ import {Colors} from '../utills/Colors';
 import constants from '../constants';
 import {useDrawerStatus} from '@react-navigation/drawer';
 import LinearGradient from 'react-native-linear-gradient';
+
+import database from "@react-native-firebase/database";
+import auth from '@react-native-firebase/auth';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -19,13 +22,25 @@ const DrawerNavContent = props => {
   const [isActive, setIsActive] = useState('HomeScreen');
   const isOpen = useDrawerStatus();
   const [userDetails, setUserDetails] = useState({});
-  const getUserDetails = async () => {
-    return await constants.storage.get('userDetails');
-  };
   useEffect(() => {
-    getUserDetails().then(res => {
-      setUserDetails(res);
-    });
+    const fetchUserDetails = async () => {
+      try {
+        const user = auth().currentUser;
+        if (user) {
+          const userSnapshot = await database()
+            .ref('users/' + user.uid)
+            .once('value');
+          const userData = userSnapshot.val();
+          setUserDetails(userData);
+        } else {
+          console.log('No user is currently logged in.');
+        }
+      } catch (error) {
+        console.error('Error fetching user details: ', error);
+      }
+    };
+
+    fetchUserDetails();
   }, [isOpen]);
   const handleNavigation = route => {
     setIsActive(route);
@@ -52,7 +67,10 @@ const DrawerNavContent = props => {
       <View style={styles.drawerIconSection}>
         <Image
           style={styles.stretch}
-          source={require('../assets/images/avatar.png')}
+          borderRadius={50}
+          source={userDetails?.image 
+            ? { uri: userDetails.image } 
+            : require('../assets/images/avatar.png')}
         />
         <Text
           style={{
@@ -136,7 +154,7 @@ const DrawerNavContent = props => {
           </TouchableOpacity>
         )}
         <TouchableOpacity
-          onPress={() => handleNavigation('BinsStatusScreen')}
+          onPress={() => handleNavigation(userDetails?.userType !== 'collector' ? 'BinsStatusScreen':'CollectorBin')}
           activeOpacity={0.8}
           style={
             isActive === 'BinsStatusScreen'
@@ -154,7 +172,7 @@ const DrawerNavContent = props => {
           />
           <Text style={styles.screenTitle}>Bins Status</Text>
         </TouchableOpacity>
-        {userDetails?.userType === 'collector' && (
+       
           <TouchableOpacity
             onPress={() => handleNavigation('ComplainScreen')}
             activeOpacity={0.8}
@@ -174,8 +192,8 @@ const DrawerNavContent = props => {
             />
             <Text style={styles.screenTitle}>Report an Issue</Text>
           </TouchableOpacity>
-        )}
-        {userDetails?.userType === 'collector' && (
+        
+        {userDetails?.userType !== 'collector' && (
             <TouchableOpacity
                 onPress={() => handleNavigation('FeedbackScreen')}
                 activeOpacity={0.8}

@@ -15,6 +15,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import {Colors} from '../../utills/Colors';
 import * as ImagePicker from 'react-native-image-picker';
 import IconImage from 'react-native-vector-icons/FontAwesome';
+import database from "@react-native-firebase/database";
+import auth from '@react-native-firebase/auth';
+import Snackbar from 'react-native-snackbar';
+
 import Modal from 'react-native-modal';
 
 const ProfileScreen = () => {
@@ -33,19 +37,49 @@ const ProfileScreen = () => {
     setName(text);
   };
 
-  const handlePasswordChange = text => {
-    setPassword(text);
-  };
 
-  const handleImageUpload = () => {
-    // Implement image upload logic here
-    // This can involve using libraries like react-native-image-picker or react-native-camera
-  };
+    const handleUpdateProfile = async () => {
+      try {
+        const user = auth().currentUser;
+        if (user) {
+          await database().ref('users/' + user.uid).update({
+            userName: name,
+            image: circleImage,
+            contact: phoneNumber,
+          });
+          Snackbar.show({
+            text: 'User profile updated successfully!',
+            duration: parseInt(2000),
+            action: {
+              text: '',
+              textColor: Colors.primary,
+              onPress: () => {},
+            },
+          });
+        } else {
+          Snackbar.show({
+            text: 'User profile not updated try again!',
+            duration: parseInt(2000),
+            action: {
+              text: '',
+              textColor: Colors.primary,
+              onPress: () => {},
+            },
+          });
+        }
+      } catch (error) {
+        Snackbar.show({
+          text: 'Error updating user profile: '+error,
+          duration: parseInt(2000),
+          action: {
+            text: '',
+            textColor: Colors.primary,
+            onPress: () => {},
+          },
+        });
+      }
+    };
 
-  const handleUpdateProfile = () => {
-    const data = {name: name, image: circleImage, contact: phoneNumber};
-    console.log(data);
-  };
 
   // openGallery function will load image from gallery
   function openGallery() {

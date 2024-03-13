@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, Animated, TouchableOpacity } from 'react-native';
+import Division from './component/Division';
 
-const WasteBin = () => {
+const WasteBin = ({percentage}) => {
   const [lidOpen, setLidOpen] = useState(false);
   const [lidAngle] = useState(new Animated.Value(0));
-  const percentage = 90;
 
   // Calculate the height of the filled part of the bin based on the percentage
   const fillHeight = percentage * 2; // Adjust this factor according to your design
@@ -36,7 +36,12 @@ const WasteBin = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => setLidOpen(!lidOpen)}>
+       <Division
+      
+      text={`${percentage}% Filled`}/>
+      <TouchableOpacity
+      disabled={true}
+      onPress={() => setLidOpen(!lidOpen)}>
       <Animated.View style={[styles.binLid, { transform: [{ rotate: lidRotation }] }]} />
 
         <View style={styles.bin}>
@@ -48,7 +53,6 @@ const WasteBin = () => {
           </View>
         </View>
       </TouchableOpacity>
-      <Text style={styles.percentageText}>{percentage}% Filled</Text>
     </View>
   );
 };
@@ -61,10 +65,13 @@ const styles = StyleSheet.create({
   bin: {
     position: 'relative',
     width:150,
-    height: 200,
+    height: 180,
     left:10,
     marginTop:100,
     backgroundColor: '#D3D3D3',
+    borderBottomLeftRadius:20,
+    borderBottomRightRadius:20,
+
     overflow: 'hidden',
   },
   binBody: {
@@ -73,8 +80,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: '#D3D3D3',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
     justifyContent: 'flex-end',
     overflow: 'hidden',
   },
@@ -91,8 +96,8 @@ const styles = StyleSheet.create({
    // borderWidth:1,
     //borderColor:'#000000',
     backgroundColor: '#D3D3D3',
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: -50,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
   percentageText: {
     marginTop: 5,
