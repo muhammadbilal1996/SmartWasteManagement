@@ -35,7 +35,7 @@ const FeedbackScreen = () => {
       });
       return;
     } else if (feedback.trim().length >= 500) {
-      Alert.alert('Error', 'feedback should be less than 500 words.');
+      Alert.alert('Error', 'feedback should be less than 500 letters.');
       Snackbar.show({
         text: 'feedback should be less than 500 words.',
         duration: parseInt(2000),
