@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   ActivityIndicator,
   View,
@@ -7,6 +7,7 @@ import {
   Alert,
   TouchableOpacity,
   TextInput,
+  PermissionsAndroid,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -14,6 +15,8 @@ import database from '@react-native-firebase/database';
 //import AsyncStorage from '@react-native-async-storage/async-storage';
 import Feather from 'react-native-vector-icons/Feather';
 import {Picker} from '@react-native-picker/picker';
+import Geolocation from '@react-native-community/geolocation';
+
 //import * as firebase from 'firebase';
 import auth from '@react-native-firebase/auth';
 import Snackbar from 'react-native-snackbar';
@@ -32,6 +35,61 @@ const SignUpScreen = ({navigation}) => {
     isValidPassword: true,
     emailError: false,
   });
+
+
+  
+  const [userLocation, setUserLocation] = useState({
+    latitude: 33.684051,
+    longitude: 72.981572,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+  useEffect(() => {
+    const requestLocationPermission = async () => {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Access Required',
+            message: 'This App needs to Access your location',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          //To Check, If Permission is granted
+          getOneTimeLocation();
+        } else {
+          console.log('Permission Denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    };
+    requestLocationPermission();
+  }, []);
+
+  const getOneTimeLocation = () => {
+    Geolocation.getCurrentPosition(
+      //Will give you the current location
+      position => {
+        setUserLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+
+      },
+      error => {
+        console.log(error.message);
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 30000,
+        maximumAge: 1000,
+      },
+    );
+  };
+
 
   const ValidateEmail = mail => {
     return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(mail);
@@ -104,7 +162,9 @@ const SignUpScreen = ({navigation}) => {
               userPassword: state.password,
               userType: state.userType,
               uId: res.user.uid,
-              status: state.userType !== 'collector',
+              status: state.userType === 'collector' ? 'pending':'accepted',
+              latitude: userLocation?.latitude,
+              longitude: userLocation?.longitude,
             })
             .then(() => {
               Snackbar.show({

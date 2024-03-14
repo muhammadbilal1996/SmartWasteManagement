@@ -9,6 +9,7 @@ import {
   Platform,
   PermissionsAndroid,
   TouchableHighlight,
+  ActivityIndicator,
 } from 'react-native';
 import Header from '../../components/Header';
 import LinearGradient from 'react-native-linear-gradient';
@@ -18,6 +19,7 @@ import IconImage from 'react-native-vector-icons/FontAwesome';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import Snackbar from 'react-native-snackbar';
+import storage from '@react-native-firebase/storage';
 
 import Modal from 'react-native-modal';
 
@@ -25,7 +27,7 @@ const ProfileScreen = () => {
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(false);
 
   const [circleImage, setCircleImage] = useState('');
 
@@ -37,15 +39,26 @@ const ProfileScreen = () => {
     setName(text);
   };
 
+
+const uploadImage = async (imageUri,user) => {
+  const reference = storage().ref(`user-images/${user.uid}`); // Replace with your desired path structure
+  const response = await reference.putFile(imageUri);
+
+   return response.metadata.fullPath; // Get the downloadable URL
+};
+
+
   const handleUpdateProfile = async () => {
+    setImage(true)
     try {
       const user = auth().currentUser;
       if (user) {
+        const imageUrl = await uploadImage(circleImage,user); // Get the downloadable URL
         await database()
           .ref('users/' + user.uid)
           .update({
             userName: name,
-            image: circleImage,
+            image: imageUrl,
             contact: phoneNumber,
           });
         Snackbar.show({
@@ -57,6 +70,7 @@ const ProfileScreen = () => {
             onPress: () => {},
           },
         });
+        setImage(false)
       } else {
         Snackbar.show({
           text: 'User profile not updated try again!',
@@ -67,6 +81,8 @@ const ProfileScreen = () => {
             onPress: () => {},
           },
         });
+        setImage(false)
+
       }
     } catch (error) {
       Snackbar.show({
@@ -78,6 +94,8 @@ const ProfileScreen = () => {
           onPress: () => {},
         },
       });
+      setImage(false)
+
     }
   };
 
@@ -279,7 +297,8 @@ const ProfileScreen = () => {
           <LinearGradient
             colors={[Colors.primary, Colors.primary_dark]}
             style={styles.signIn}>
-            <Text style={[styles.textSign, {color: '#fff'}]}>Update</Text>
+              {image ? <ActivityIndicator size="large" color={Colors.white}/> :<Text style={[styles.textSign, {color: '#fff'}]}>Update</Text>}
+            
           </LinearGradient>
         </TouchableOpacity>
       </View>

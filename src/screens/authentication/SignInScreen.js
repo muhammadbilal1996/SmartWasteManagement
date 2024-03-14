@@ -99,7 +99,7 @@ const SignInScreen = ({navigation}) => {
               //constants.storage.set('userDetails', snapshot);
               if (
                 snapshot.val().userType === 'collector' &&
-                snapshot.val().status === false
+                snapshot.val().status =='pending'
               ) {
                 console.log(snapshot);
                 setState({
@@ -107,15 +107,17 @@ const SignInScreen = ({navigation}) => {
                   isLoading: false,
                 });
                 Snackbar.show({
-                  text: 'Email not Verified.',
-                  duration: parseInt(2000),
+                  text: 'Email not Verified.Wait for admin approval',
+                  duration: parseInt(6000),
                   action: {
-                    text: '',
+                    text: 'Ok',
                     textColor: Colors.primary,
                     onPress: () => {},
                   },
                 });
               } else {
+
+                constants.storage.set('userDetails', snapshot);
                 Snackbar.show({
                   text: 'User logged-in successfully!',
                   duration: parseInt(2000),

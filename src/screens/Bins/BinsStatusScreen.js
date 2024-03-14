@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
 
-import database from "@react-native-firebase/database";
+import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import BinComponent from './component/BinComponent';
 import WasteBin from './ViewBins';
 import Header from '../../components/Header';
-
+import NoBinAssigned from '../../components/NoBinAssigned';
 
 const BinsStatusScreen = ({navigation}) => {
   const [binsData, setBinsData] = useState();
@@ -19,31 +19,35 @@ const BinsStatusScreen = ({navigation}) => {
         .ref('bins')
         .orderByChild('comCollector')
         .equalTo(user.uid); // Remove .database() from database()
-      binsRef.on('value', snapshot => {
-        const binData = snapshot.val();
-        if (binData) {
-         
-          setBinsData(binData);
-        }
-      });
+      if (binsRef) {
+        binsRef.on('value', snapshot => {
+          const binData = snapshot?.val();
+          if (binData) {
+            setBinsData(binData);
+          }
+        });
+      }
     }
   }, []);
 
 
   return (
     <View style={styles.mainContainer}>
-     <Header title={'Bins Status'} />
-     
-      <WasteBin
-      percentage={72}/>
-      {binsData &&
-        Object.entries(binsData).map(([binId, binData]) => (
-          <BinComponent
-            key={binId}
-            binsData={binData}
-            navigation={navigation}
-          />
-        ))}
+      <Header title={'Bins Status'} />
+      {binsData ? 
+      <>
+      <WasteBin percentage={72} />
+      
+        {binsData &&
+          Object.entries(binsData).map(([binId, binData]) => (
+            <BinComponent
+              key={binId}
+              binsData={binData}
+              navigation={navigation}
+            />
+          ))}
+      </>
+      : <NoBinAssigned/>}
     </View>
   );
 };
@@ -81,7 +85,7 @@ const styles = StyleSheet.create({
   },
   itemDetails: {
     fontSize: 14,
-      color: 'black'
+    color: 'black',
   },
 });
 

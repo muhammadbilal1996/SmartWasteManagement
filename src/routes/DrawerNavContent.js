@@ -13,15 +13,16 @@ import constants from '../constants';
 import {useDrawerStatus} from '@react-navigation/drawer';
 import LinearGradient from 'react-native-linear-gradient';
 
-import database from "@react-native-firebase/database";
+import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
+import storage from '@react-native-firebase/storage';
 const DrawerNavContent = props => {
   const [isActive, setIsActive] = useState('HomeScreen');
   const isOpen = useDrawerStatus();
   const [userDetails, setUserDetails] = useState({});
+  const [userImage,setUserImage] = useState()
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -31,7 +32,19 @@ const DrawerNavContent = props => {
             .ref('users/' + user.uid)
             .once('value');
           const userData = userSnapshot.val();
+          console.log('userData.......', userDetails.image);
           setUserDetails(userData);
+         if(userData?.image) {
+          let imageRef = storage().ref('/' +  userData.image);
+          imageRef
+            .getDownloadURL()
+            .then(url => {
+              setUserImage(url)
+            })
+            .catch(e =>
+              console.log('getting downloadURL of image error => ', e),
+            );
+         }
         } else {
           console.log('No user is currently logged in.');
         }
@@ -57,87 +70,52 @@ const DrawerNavContent = props => {
     return capitalizedWords.join(' ');
   };
   return (
-   
     <View>
-       <LinearGradient
-    colors={[Colors.primary, Colors.primary_Light]}
-    style={styles.mainContainer}>
- 
-
-      <View style={styles.drawerIconSection}>
-        <Image
-          style={styles.stretch}
-          borderRadius={50}
-          source={userDetails?.image 
-            ? { uri: userDetails.image } 
-            : require('../assets/images/avatar.png')}
-        />
-        <Text
-          style={{
-            fontSize: 16,
-            color: '#ffffff',
-            marginTop: 10,
-            fontFamily: 'Inter-SemiBold',
-          }}>
-          {userDetails?.userName}
-        </Text>
-        <Text
-          style={{
-            fontSize: 16,
-            color: 'white',
-            fontFamily: 'Inter-Medium',
-          }}>
-          {userDetails?.userEmail}
-        </Text>
-        <Text
-          style={{
-            fontSize: 14,
-            color: 'white',
-            fontFamily: 'Inter-SemiBold',
-          }}>
-          {`User Role: ${capitalizeWords(userDetails?.userType)}`}
-        </Text>
-      </View>
-      <View style={styles.drawerSectionContainer}>
-        <TouchableOpacity
-          onPress={() => handleNavigation('HomeScreen')}
-          activeOpacity={0.8}
-          style={
-            isActive === 'HomeScreen'
-              ? [
-                  styles.screenContainer,
-                  {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
-                ]
-              : styles.screenContainer
-          }>
-          <Icon style={{marginLeft: 8}} name="home" size={24} color="#C8C8C8" />
-          <Text style={styles.screenTitle}>Dashboard</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleNavigation('ProfileScreen')}
-          activeOpacity={0.8}
-          style={
-            isActive === 'ProfileScreen'
-              ? [
-                  styles.screenContainer,
-                  {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
-                ]
-              : styles.screenContainer
-          }>
-          <Icon
-            style={{marginLeft: 8}}
-            name="user-circle"
-            size={24}
-            color="#C8C8C8"
+      <LinearGradient
+        colors={[Colors.primary, Colors.primary_Light]}
+        style={styles.mainContainer}>
+        <View style={styles.drawerIconSection}>
+          <Image
+            style={styles.stretch}
+            borderRadius={50}
+            source={ userImage
+              ? {uri: userImage}
+              : require('../assets/images/avatar.png')
+            }
           />
-          <Text style={styles.screenTitle}>ProfileScreen</Text>
-        </TouchableOpacity>
-        {userDetails?.userType === 'collector' && (
+
+          <Text
+            style={{
+              fontSize: 16,
+              color: '#ffffff',
+              marginTop: 10,
+              fontFamily: 'Inter-SemiBold',
+            }}>
+            {userDetails?.userName}
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              color: 'white',
+              fontFamily: 'Inter-Medium',
+            }}>
+            {userDetails?.userEmail}
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              color: 'white',
+              fontFamily: 'Inter-SemiBold',
+            }}>
+            {`User Role: ${capitalizeWords(userDetails?.userType)}`}
+          </Text>
+        </View>
+        <View style={styles.drawerSectionContainer}>
           <TouchableOpacity
-            onPress={() => handleNavigation('HistoryScreen')}
+            onPress={() => handleNavigation('HomeScreen')}
             activeOpacity={0.8}
             style={
-              isActive === 'HistoryScreen'
+              isActive === 'HomeScreen'
                 ? [
                     styles.screenContainer,
                     {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
@@ -146,33 +124,78 @@ const DrawerNavContent = props => {
             }>
             <Icon
               style={{marginLeft: 8}}
-              name="history"
+              name="home"
               size={24}
               color="#C8C8C8"
             />
-            <Text style={styles.screenTitle}>History Screen</Text>
+            <Text style={styles.screenTitle}>Dashboard</Text>
           </TouchableOpacity>
-        )}
-        <TouchableOpacity
-          onPress={() => handleNavigation(userDetails?.userType !== 'collector' ? 'BinsStatusScreen':'CollectorBin')}
-          activeOpacity={0.8}
-          style={
-            isActive === 'BinsStatusScreen'
-              ? [
-                  styles.screenContainer,
-                  {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
-                ]
-              : styles.screenContainer
-          }>
-          <Icon
-            style={{marginLeft: 8}}
-            name="trash"
-            size={24}
-            color="#C8C8C8"
-          />
-          <Text style={styles.screenTitle}>Bins Status</Text>
-        </TouchableOpacity>
-       
+          <TouchableOpacity
+            onPress={() => handleNavigation('ProfileScreen')}
+            activeOpacity={0.8}
+            style={
+              isActive === 'ProfileScreen'
+                ? [
+                    styles.screenContainer,
+                    {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
+                  ]
+                : styles.screenContainer
+            }>
+            <Icon
+              style={{marginLeft: 8}}
+              name="user-circle"
+              size={24}
+              color="#C8C8C8"
+            />
+            <Text style={styles.screenTitle}>ProfileScreen</Text>
+          </TouchableOpacity>
+          {userDetails?.userType === 'collector' && (
+            <TouchableOpacity
+              onPress={() => handleNavigation('HistoryScreen')}
+              activeOpacity={0.8}
+              style={
+                isActive === 'HistoryScreen'
+                  ? [
+                      styles.screenContainer,
+                      {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
+                    ]
+                  : styles.screenContainer
+              }>
+              <Icon
+                style={{marginLeft: 8}}
+                name="history"
+                size={24}
+                color="#C8C8C8"
+              />
+              <Text style={styles.screenTitle}>History Screen</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            onPress={() =>
+              handleNavigation(
+                userDetails?.userType !== 'collector'
+                  ? 'BinsStatusScreen'
+                  : 'CollectorBin',
+              )
+            }
+            activeOpacity={0.8}
+            style={
+              isActive === 'BinsStatusScreen'
+                ? [
+                    styles.screenContainer,
+                    {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
+                  ]
+                : styles.screenContainer
+            }>
+            <Icon
+              style={{marginLeft: 8}}
+              name="trash"
+              size={24}
+              color="#C8C8C8"
+            />
+            <Text style={styles.screenTitle}>Bins Status</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity
             onPress={() => handleNavigation('ComplainScreen')}
             activeOpacity={0.8}
@@ -192,46 +215,46 @@ const DrawerNavContent = props => {
             />
             <Text style={styles.screenTitle}>Report an Issue</Text>
           </TouchableOpacity>
-        
-        {userDetails?.userType !== 'collector' && (
+
+          {userDetails?.userType !== 'collector' && (
             <TouchableOpacity
-                onPress={() => handleNavigation('FeedbackScreen')}
-                activeOpacity={0.8}
-                style={
-                  isActive === 'FeedbackScreen'
-                      ? [
-                        styles.screenContainer,
-                        {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
-                      ]
-                      : styles.screenContainer
-                }>
+              onPress={() => handleNavigation('FeedbackScreen')}
+              activeOpacity={0.8}
+              style={
+                isActive === 'FeedbackScreen'
+                  ? [
+                      styles.screenContainer,
+                      {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
+                    ]
+                  : styles.screenContainer
+              }>
               <Icon
-                  style={{marginLeft: 8}}
-                  name="exclamation-triangle"
-                  size={24}
-                  color="#C8C8C8"
+                style={{marginLeft: 8}}
+                name="exclamation-triangle"
+                size={24}
+                color="#C8C8C8"
               />
               <Text style={styles.screenTitle}>Feedback</Text>
             </TouchableOpacity>
-        )}
-        <TouchableOpacity
-          onPress={() => {
-            constants.storage.remove('userDetails');
-            props.navigation.replace('SignInScreen');
-          }}
-          activeOpacity={0.8}
-          style={styles.logoutContainer}>
-          <Icon
-            style={{marginLeft: 8}}
-            name="sign-out"
-            size={24}
-            color="#C8C8C8"
-          />
-          <Text style={[styles.screenTitle, {color: 'white', fontSize: 16}]}>
-            Logout
-          </Text>
-        </TouchableOpacity>
-      </View>
+          )}
+          <TouchableOpacity
+            onPress={() => {
+              constants.storage.remove('userDetails');
+              props.navigation.replace('SignInScreen');
+            }}
+            activeOpacity={0.8}
+            style={styles.logoutContainer}>
+            <Icon
+              style={{marginLeft: 8}}
+              name="sign-out"
+              size={24}
+              color="#C8C8C8"
+            />
+            <Text style={[styles.screenTitle, {color: 'white', fontSize: 16}]}>
+              Logout
+            </Text>
+          </TouchableOpacity>
+        </View>
       </LinearGradient>
     </View>
   );
@@ -272,7 +295,7 @@ const styles = StyleSheet.create({
   },
   screenTitle: {
     fontSize: 14,
-    color:'#ffffff',
+    color: '#ffffff',
     fontFamily: 'DMSans-Medium',
     paddingBottom: 2,
     marginLeft: 12,

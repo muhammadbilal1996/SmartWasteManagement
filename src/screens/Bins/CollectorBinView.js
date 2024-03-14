@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, FlatList, TouchableOpacity, Image} from 'react-native';
 import Header from '../../components/Header';
 
 import database from '@react-native-firebase/database';
@@ -7,21 +7,34 @@ import auth from '@react-native-firebase/auth';
 import MapView, {Marker} from 'react-native-maps';
 import LottieView from 'lottie-react-native';
 import Icon from "react-native-vector-icons/FontAwesome";
+import NoBinAssigned from '../../components/NoBinAssigned';
 
 const CollectorBinView = ({navigation}) => {
   const [binsData, setBinsData] = useState([]);
   useEffect(() => {
-    const user = auth().currentUser; // Use auth module to get the current user
-
+    const user = auth().currentUser;
     const binsRef = database()
-    .ref('bins')
-    .orderByChild('binCollector')
-    .equalTo(user.uid); // Remove .database() from database()
-  binsRef.on('value', snapshot => {
-    setBinsData(Object.values(snapshot.val()));
-  });
-   
+      .ref('bins')
+      .orderByChild('binCollector')
+      .equalTo(user.uid);
+  
+    if (binsRef) {
+      binsRef.on('value', snapshot => {
+        console.log("snapshot...",snapshot)
+        if (snapshot.exists()) { // Check if the snapshot exists
+          const data = snapshot.val();
+          const binsArray = [];
+          snapshot.forEach(childSnapshot => {
+            binsArray.push(childSnapshot.val());
+          });
+          setBinsData(binsArray);
+        } else {
+          setBinsData([]); // Set binsData to an empty array if no data is found
+        }
+      });
+    }
   }, []);
+  
 
   // Rendering each historical event item
   const renderItem = ({item}) => (
@@ -85,11 +98,14 @@ const CollectorBinView = ({navigation}) => {
   return (
     <View style={styles.mainContainer}>
       <Header title={'Bins Status'} />
-      <FlatList
+    {binsData?.length ?  <FlatList
         showsVerticalScrollIndicator={false}
         data={binsData}
         renderItem={renderItem}
       />
+      :
+      <NoBinAssigned/>
+    }  
     </View>
   );
 };
