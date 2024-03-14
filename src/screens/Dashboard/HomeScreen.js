@@ -7,7 +7,7 @@ import {
   Dimensions,
   PermissionsAndroid,
   Text,
-  Image,
+  Image, Linking,
 } from 'react-native';
 import MapView, {Marker, Polyline} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
@@ -210,11 +210,16 @@ const HomeScreen = () => {
   const handleCollectNow = () => {
     // Navigate to the next screen with the shortest polyline coordinates
     // Implement your navigation logic here
-    console.log('Navigate to the next screen');
-    console.log('Shortest Polyline Coordinates:', polylineCoordinates);
-    navigation.navigate('LiveTracking', {
-      polylineCoordinates: polylineCoordinates,
-    });
+    // console.log('Navigate to the next screen');
+    // console.log('Shortest Polyline Coordinates:', polylineCoordinates);
+    // navigation.navigate('LiveTracking', {
+    //   polylineCoordinates: polylineCoordinates,
+    // });
+    const latitude = nearestFilledBin?.latitude;
+    const longitude = nearestFilledBin?.longitude;
+    const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+    Linking.openURL(url);
   };
 
   return (
