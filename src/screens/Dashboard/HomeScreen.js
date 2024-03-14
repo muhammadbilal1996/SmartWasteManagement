@@ -7,6 +7,7 @@ import {
   Dimensions,
   PermissionsAndroid,
   Text,
+  Image,
 } from 'react-native';
 import MapView, {Marker, Polyline} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
@@ -215,7 +216,6 @@ const HomeScreen = () => {
       polylineCoordinates: polylineCoordinates,
     });
   };
-  
 
   return (
     <View style={styles.container}>
@@ -227,7 +227,11 @@ const HomeScreen = () => {
       </TouchableOpacity>
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color={Colors.primary} style={styles.loader} />
+          <ActivityIndicator
+            size="large"
+            color={Colors.primary}
+            style={styles.loader}
+          />
         </View>
       ) : (
         userLocation && (
@@ -239,13 +243,16 @@ const HomeScreen = () => {
                   latitude: userLocation.latitude,
                   longitude: userLocation.longitude,
                 }}
-                title="Your Location"
-                image={
-                  userDetails?.userType === 'collector'
-                    ? require('../../assets/images/truck.png')
-                    : require('../../assets/images/user.png')
-                } // Set the image for the user location marker
-              />
+                title="Your Location">
+                <Image
+                  source={
+                    userDetails?.userType === 'collector'
+                      ? require('../../assets/images/truck.png')
+                      : require('../../assets/images/user.png')
+                  }
+                  style={{width: 24, height: 24}}
+                />
+              </Marker>
             )}
 
             {/* Draw a polyline from the nearest filled bin to other filled bins */}
@@ -265,13 +272,16 @@ const HomeScreen = () => {
                   latitude: marker.latitude,
                   longitude: marker.longitude,
                 }}
-                title={marker.title}
-                image={
-                  marker.status == 'filled'
-                    ? require('../../assets/images/filled_bin.png')
-                    : require('../../assets/images/empty_bin.png')
-                }
-              />
+                title={marker.title}>
+                <Image
+                  source={
+                    marker.status === 'filled'
+                      ? require('../../assets/images/filled_bin.png')
+                      : require('../../assets/images/empty_bin.png')
+                  }
+                  style={{width: 24, height: 24}}
+                />
+              </Marker>
             ))}
           </MapView>
         )
