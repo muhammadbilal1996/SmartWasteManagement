@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ActivityIndicator, ScrollView, TextInput} from 'react-native';
+import {ActivityIndicator, Keyboard, ScrollView, TextInput} from 'react-native';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import database from '@react-native-firebase/database';
 //import AsyncStorage from '@react-native-community/async-storage';
@@ -70,6 +70,7 @@ const SignInScreen = ({navigation}) => {
   };
 
   const loginHandle = () => {
+    Keyboard.dismiss();
     if (state.email === '' || state.password === '') {
       Snackbar.show({
         text: 'Username or password field cannot be empty.',
@@ -92,32 +93,52 @@ const SignInScreen = ({navigation}) => {
       auth()
         .signInWithEmailAndPassword(state.email, state.password)
         .then(res => {
-          console.log('res...............', JSON.stringify(res));
           database()
             .ref(`/users/${res.user.uid}`)
             .on('value', snapshot => {
-              constants.storage.set('userDetails', snapshot);
+              //constants.storage.set('userDetails', snapshot);
+              if (
+                snapshot.val().userType === 'collector' &&
+                snapshot.val().status === false
+              ) {
+                console.log(snapshot);
+                setState({
+                  ...state,
+                  isLoading: false,
+                });
+                Snackbar.show({
+                  text: 'Email not Verified.',
+                  duration: parseInt(2000),
+                  action: {
+                    text: '',
+                    textColor: Colors.primary,
+                    onPress: () => {},
+                  },
+                });
+              } else {
+                Snackbar.show({
+                  text: 'User logged-in successfully!',
+                  duration: parseInt(2000),
+                  action: {
+                    text: '',
+                    textColor: Colors.primary,
+                    onPress: () => {},
+                  },
+                });
+                setState({
+                  ...state,
+                  isLoading: false,
+                  email: '',
+                  password: '',
+                  check_textInputChange: false,
+                  secureTextEntry: true,
+                  isValidUser: true,
+                  isValidPassword: true,
+                });
+                navigation.replace('MyDrawer');
+              }
             });
-          Snackbar.show({
-            text: 'User logged-in successfully!',
-            duration: parseInt(2000),
-            action: {
-              text: '',
-              textColor: Colors.primary,
-              onPress: () => {},
-            },
-          });
-          setState({
-            ...state,
-            isLoading: false,
-            email: '',
-            password: '',
-            check_textInputChange: false,
-            secureTextEntry: true,
-            isValidUser: true,
-            isValidPassword: true,
-          });
-          navigation.replace('MyDrawer');
+
         })
         .catch(error => {
           if (error.code === 'auth/wrong-password') {

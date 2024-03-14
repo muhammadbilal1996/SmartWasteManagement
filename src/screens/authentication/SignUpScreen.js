@@ -1,5 +1,13 @@
-import React, { useState } from 'react';
-import {ActivityIndicator,View, Text, StyleSheet, Alert, TouchableOpacity, TextInput} from 'react-native';
+import React, {useState} from 'react';
+import {
+  ActivityIndicator,
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import database from '@react-native-firebase/database';
@@ -9,79 +17,83 @@ import {Picker} from '@react-native-picker/picker';
 //import * as firebase from 'firebase';
 import auth from '@react-native-firebase/auth';
 import Snackbar from 'react-native-snackbar';
-import { Colors } from '../../utills/Colors';
-const SignUpScreen = ({ navigation }) => {
-    const [state, setState] = useState({
-      displayName: '',
-      email: '',
-      password: '',
-      userType:'collector',
-      isLoading: false,
-      validate_displayName:false,
-      check_textInputChange: false,
-      secureTextEntry: true,
-      isValidUser: true,
-      isValidPassword: true,
-      emailError: false,
-    });
-  
-    const ValidateEmail = mail => {
-        return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(mail);
-    };
-  
-    const textInputChange = val => {
-      if (val.trim().length >= 4) {
-        setState(prevState => ({
-          ...prevState,
-          email: val,
-          check_textInputChange: true,
-          isValidUser: true,
-        }));
-      } else {
-        setState(prevState => ({
-          ...prevState,
-          email: val,
-          check_textInputChange: false,
-          isValidUser: false,
-        }));
-      }
-    };
-  
-    const handlePasswordChange = val => {
-      if (val.trim().length >= 4) {
-        setState(prevState => ({
-          ...prevState,
-          password: val,
-          isValidPassword: true,
-        }));
-      } else {
-        setState(prevState => ({
-          ...prevState,
-          password: val,
-          isValidPassword: false,
-        }));
-      }
-    };
-  
-    const updateSecureTextEntry = () => {
+import {Colors} from '../../utills/Colors';
+const SignUpScreen = ({navigation}) => {
+  const [state, setState] = useState({
+    displayName: '',
+    email: '',
+    password: '',
+    userType: 'collector',
+    isLoading: false,
+    validate_displayName: false,
+    check_textInputChange: false,
+    secureTextEntry: true,
+    isValidUser: true,
+    isValidPassword: true,
+    emailError: false,
+  });
+
+  const ValidateEmail = mail => {
+    return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(mail);
+  };
+
+  const textInputChange = val => {
+    if (val.trim().length >= 4) {
       setState(prevState => ({
         ...prevState,
-        secureTextEntry: !prevState.secureTextEntry,
+        email: val,
+        check_textInputChange: true,
+        isValidUser: true,
       }));
-    };
-  
-    const signUpHandle = async () => {
-      if (state.email === '' || state.password === '' || state.displayName==='') {
-        Alert.alert('Fields cannot be empty!');
-      } else if (!ValidateEmail(state.email)) {
-        setState(prevState => ({ ...prevState, emailError: true }));
-      } else {
-        setState(prevState => ({
-          ...prevState,
-          isLoading: true,
-          emailError: false,
-        }));
-        auth()
+    } else {
+      setState(prevState => ({
+        ...prevState,
+        email: val,
+        check_textInputChange: false,
+        isValidUser: false,
+      }));
+    }
+  };
+
+  const handlePasswordChange = val => {
+    if (val.trim().length >= 4) {
+      setState(prevState => ({
+        ...prevState,
+        password: val,
+        isValidPassword: true,
+      }));
+    } else {
+      setState(prevState => ({
+        ...prevState,
+        password: val,
+        isValidPassword: false,
+      }));
+    }
+  };
+
+  const updateSecureTextEntry = () => {
+    setState(prevState => ({
+      ...prevState,
+      secureTextEntry: !prevState.secureTextEntry,
+    }));
+  };
+
+  const signUpHandle = async () => {
+    if (
+      state.email === '' ||
+      state.password === '' ||
+      state.displayName === ''
+    ) {
+      Alert.alert('Fields cannot be empty!');
+    } else if (!ValidateEmail(state.email)) {
+      setState(prevState => ({...prevState, emailError: true}));
+    } else {
+      setState(prevState => ({
+        ...prevState,
+        isLoading: true,
+        emailError: false,
+      }));
+      auth()
         .createUserWithEmailAndPassword(state.email, state.password)
         .then(res => {
           database()
@@ -92,6 +104,7 @@ const SignUpScreen = ({ navigation }) => {
               userPassword: state.password,
               userType: state.userType,
               uId: res.user.uid,
+              status: state.userType !== 'collector',
             })
             .then(() => {
               Snackbar.show({
@@ -103,21 +116,22 @@ const SignUpScreen = ({ navigation }) => {
                   onPress: () => {},
                 },
               });
-      
-            setState({
-              displayName: '',
-              email: '',
-              password: '',
-              userType:'collector',
-              isLoading: false,
-              check_textInputChange: false,
-              secureTextEntry: true,
-              isValidUser: true,
-              isValidPassword: true,
+
+              setState({
+                displayName: '',
+                email: '',
+                password: '',
+                userType: 'collector',
+                isLoading: false,
+                check_textInputChange: false,
+                secureTextEntry: true,
+                isValidUser: true,
+                isValidPassword: true,
+              });
+              navigation.navigate('SignInScreen');
             });
-            navigation.navigate('SignInScreen');
-          })
-        }).catch(error => {
+        })
+        .catch(error => {
           if (error.code === 'auth/weak-password') {
             Snackbar.show({
               text: 'The password is too weak.',
@@ -149,109 +163,112 @@ const SignUpScreen = ({ navigation }) => {
               },
             });
           }
-          setState(prevState => ({ ...prevState, isLoading: false }));
-        })
-      }
-
+          setState(prevState => ({...prevState, isLoading: false}));
+        });
     }
+  };
 
-    
-    return (
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.text_header}>Register Now!</Text>
-          </View>
-          <View style={styles.footer}>
-          <Text style={styles.text_footer}>Name</Text> 
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.text_header}>Register Now!</Text>
+      </View>
+      <View style={styles.footer}>
+        <Text style={styles.text_footer}>Name</Text>
         <View style={styles.action}>
           <FontAwesomeIcon name="user-o" color="#05375a" size={20} />
           <TextInput
             placeholder="Your Name"
             style={styles.textInput}
             autoCapitalize="none"
-            onChangeText={(val) => setState({ ...state, displayName: val })}
+            onChangeText={val => setState({...state, displayName: val})}
           />
         </View>
-            <Text style={styles.text_footer}>Email</Text>
-            <View style={styles.action}>
-              <FontAwesomeIcon name="user-o" color="#05375a" size={20} />
-              <TextInput
-                placeholder="Your Email"
-                style={styles.textInput}
-                autoCapitalize="none"
-                onChangeText={textInputChange}
-              />
-            </View>
-            {!state.emailError ? null : (
-              <View>
-                <Text style={styles.errorMsg}>Not Valid Email</Text>
-              </View>
-            )}
-            <Text style={styles.text_footer}>Password</Text>
-            <View style={styles.action}>
-              <FontAwesomeIcon name="lock" color="#05375a" size={20} />
-              <TextInput
-                placeholder="Your Password"
-                secureTextEntry={state.secureTextEntry}
-                style={styles.textInput}
-                onChangeText={handlePasswordChange}
-                autoCapitalize="none"
-              />
-              <TouchableOpacity onPress={updateSecureTextEntry}>
-                {state.secureTextEntry ? (
-                  <Feather name="eye-off" color="grey" size={20} />
-                ) : (
-                  <Feather name="eye" color="grey" size={20} />
-                )}
-              </TouchableOpacity>
-            </View>
-            {state.isValidPassword ? null : (
-              <View animation="fadeInLeft" duration={500}>
-                <Text style={styles.errorMsg}>Password must be 6 characters long</Text>
-              </View>
-            )}
-
-<Text style={styles.text_footer}>Select User Type</Text>
-
-          <Picker
-            selectedValue={state.userType}
-            style={styles.picker}
-            onValueChange={(itemValue, itemIndex) =>
-              setState({ ...state, userType: itemValue })
-            }>
-            <Picker.Item label="Waste Collector" value="collector" />
-            <Picker.Item label="Community Person" value="community_person" />
-          </Picker>
-      
-          {state.isLoading ?  
-              <View style={{marginTop:100}}>
-          <ActivityIndicator size="large" color={Colors.primary} />
+        <Text style={styles.text_footer}>Email</Text>
+        <View style={styles.action}>
+          <FontAwesomeIcon name="user-o" color="#05375a" size={20} />
+          <TextInput
+            placeholder="Your Email"
+            style={styles.textInput}
+            autoCapitalize="none"
+            onChangeText={textInputChange}
+          />
+        </View>
+        {!state.emailError ? null : (
+          <View>
+            <Text style={styles.errorMsg}>Not Valid Email</Text>
           </View>
-        :
-            <View style={styles.button}>
-              <TouchableOpacity
-                onPress={signUpHandle}
+        )}
+        <Text style={styles.text_footer}>Password</Text>
+        <View style={styles.action}>
+          <FontAwesomeIcon name="lock" color="#05375a" size={20} />
+          <TextInput
+            placeholder="Your Password"
+            secureTextEntry={state.secureTextEntry}
+            style={styles.textInput}
+            onChangeText={handlePasswordChange}
+            autoCapitalize="none"
+          />
+          <TouchableOpacity onPress={updateSecureTextEntry}>
+            {state.secureTextEntry ? (
+              <Feather name="eye-off" color="grey" size={20} />
+            ) : (
+              <Feather name="eye" color="grey" size={20} />
+            )}
+          </TouchableOpacity>
+        </View>
+        {state.isValidPassword ? null : (
+          <View animation="fadeInLeft" duration={500}>
+            <Text style={styles.errorMsg}>
+              Password must be 6 characters long
+            </Text>
+          </View>
+        )}
+
+        <Text style={styles.text_footer}>Select User Type</Text>
+
+        <Picker
+          selectedValue={state.userType}
+          style={styles.picker}
+          onValueChange={(itemValue, itemIndex) =>
+            setState({...state, userType: itemValue})
+          }>
+          <Picker.Item label="Waste Collector" value="collector" />
+          <Picker.Item label="Community Person" value="community_person" />
+        </Picker>
+
+        {state.isLoading ? (
+          <View style={{marginTop: 100}}>
+            <ActivityIndicator size="large" color={Colors.primary} />
+          </View>
+        ) : (
+          <View style={styles.button}>
+            <TouchableOpacity
+              onPress={signUpHandle}
+              colors={[Colors.primary, Colors.primary_dark]}
+              style={styles.signIn}>
+              <LinearGradient
                 colors={[Colors.primary, Colors.primary_dark]}
                 style={styles.signIn}>
-                <LinearGradient
-                  colors={[Colors.primary, Colors.primary_dark]}
-                  style={styles.signIn}>
-                  <Text style={[styles.textSign, { color: '#fff' }]}>SignUp</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('SignInScreen')}
-                style={[
-                  styles.signIn,
-                  { borderColor: Colors.primary, borderWidth: 1, marginTop: 15 },
-                ]}>
-                <Text style={[styles.textSign, { color: Colors.primary }]}>SignIn</Text>
-              </TouchableOpacity>
-            </View>}
+                <Text style={[styles.textSign, {color: '#fff'}]}>SignUp</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('SignInScreen')}
+              style={[
+                styles.signIn,
+                {borderColor: Colors.primary, borderWidth: 1, marginTop: 15},
+              ]}>
+              <Text style={[styles.textSign, {color: Colors.primary}]}>
+                SignIn
+              </Text>
+            </TouchableOpacity>
           </View>
-        </View>
-      );
-}
+        )}
+      </View>
+    </View>
+  );
+};
 
 export default SignUpScreen;
 const styles = StyleSheet.create({
@@ -262,14 +279,14 @@ const styles = StyleSheet.create({
   header: {
     flex: 0.3,
     paddingHorizontal: 15,
-    marginTop:20,
+    marginTop: 20,
   },
   footer: {
-    flex:3,
+    flex: 3,
     backgroundColor: '#fff',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    marginTop:'10%',
+    marginTop: '10%',
     paddingHorizontal: 20,
     paddingVertical: 30,
   },
@@ -281,7 +298,7 @@ const styles = StyleSheet.create({
   text_footer: {
     color: '#05375a',
     fontSize: 18,
-    marginTop:10
+    marginTop: 10,
   },
   action: {
     flexDirection: 'row',
@@ -332,4 +349,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-})
+});
