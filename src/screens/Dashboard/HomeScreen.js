@@ -45,7 +45,18 @@ const HomeScreen = () => {
             .ref('users/' + user.uid)
             .once('value');
           const userData = userSnapshot.val();
+          if(userData?.area) {
+            getBinsData(userData?.area)
+          }
           setUserDetails(userData);
+          if(userData?.userLat) {
+            setUserLocation({
+              latitude: userData?.userLat,
+              longitude: userData?.userLng,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            });
+          }
         } else {
           console.log('No user is currently logged in.');
         }
@@ -57,7 +68,41 @@ const HomeScreen = () => {
     fetchUserDetails();
   }, []);
 
-  useEffect(() => {
+
+
+  const getBinsData = (userArea) =>{
+    const user = auth().currentUser;
+  
+    if (user) {
+      const binsRef = database().ref('bins');
+      binsRef.on('value', snapshot => {
+        const binData = snapshot.val();
+        if (binData) {
+        
+            const sectorData = binData[userArea];
+            if (sectorData) {
+              const newMarkers = Object.keys(sectorData).reduce((markers, street) => {
+                const bin = sectorData[street];
+                markers.push({
+                  id: bin.binId,
+                  title: bin.binName || 'Bin',
+                  latitude: bin.binLat,
+                  longitude: bin.binLng,
+                  status: bin.binPercentage,
+                });
+                return markers;
+              }, []);
+              setMarkers(newMarkers);
+              setLoading(false)
+            }
+        
+        
+        }
+      });
+      setLoading(false)
+    }
+  }
+ /* useEffect(() => {
     const requestLocationPermission = async () => {
       try {
         const granted = await PermissionsAndroid.request(
@@ -80,7 +125,7 @@ const HomeScreen = () => {
     requestLocationPermission();
   }, []);
 
-  const getOneTimeLocation = () => {
+ const getOneTimeLocation = () => {
     Geolocation.getCurrentPosition(
       //Will give you the current location
       position => {
@@ -101,35 +146,8 @@ const HomeScreen = () => {
         maximumAge: 1000,
       },
     );
-  };
+  };*/
 
-  useEffect(() => {
-    // Check if user is authenticated
-    const user = auth().currentUser; // Use auth module to get the current user
-    if (user) {
-      // Retrieve bin data for the current user from database
-      const binsRef = database()
-        .ref('bins')
-        .orderByChild('binCollector')
-        .equalTo(user.uid); // Remove .database() from database()
-      binsRef.on('value', snapshot => {
-        const binData = snapshot.val();
-        if (binData) {
-          // Convert bin data to markers format
-          const newMarkers = Object.values(binData).map(bin => ({
-            id: bin.binId,
-            title: bin.binName || 'Bin',
-            latitude: bin.binLat,
-            longitude: bin.binLng,
-            status: bin.binStatus,
-          }));
-          // Update markers state
-          console.log({newMarkers});
-          setMarkers(newMarkers);
-        }
-      });
-    }
-  }, []);
 
   useEffect(() => {
     // Calculate distances and find the nearest filled bin
@@ -205,6 +223,8 @@ const HomeScreen = () => {
 
       setPolylineCoordinates(polylineCoordinates);
     }
+  console.log("userAreauserAreauserAreamarkers",markers);
+
   }, [userLocation, nearestFilledBin, markers]);
 
   const handleCollectNow = () => {
@@ -280,7 +300,7 @@ const HomeScreen = () => {
                 title={marker.title}>
                 <Image
                   source={
-                    marker.status === 'filled'
+                    marker.status ==='filled'
                       ? require('../../assets/images/filled_bin.png')
                       : require('../../assets/images/empty_bin.png')
                   }

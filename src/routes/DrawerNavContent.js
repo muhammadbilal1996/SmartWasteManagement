@@ -32,7 +32,6 @@ const DrawerNavContent = props => {
             .ref('users/' + user.uid)
             .once('value');
           const userData = userSnapshot.val();
-          console.log('userData.......', userDetails.image);
           setUserDetails(userData);
          if(userData?.image) {
           let imageRef = storage().ref('/' +  userData.image);
