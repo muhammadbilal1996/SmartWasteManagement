@@ -47,6 +47,8 @@ const HomeScreen = () => {
           const userData = userSnapshot.val();
           if(userData?.area) {
             getBinsData(userData?.area)
+          } else {
+            setLoading(false);
           }
           setUserDetails(userData);
           if(userData?.userLat) {
@@ -154,7 +156,7 @@ const HomeScreen = () => {
     if (userLocation && markers.length > 0) {
       let nearestDistance = Number.MAX_VALUE;
       let nearestBin = null;
-
+console.log("markers................",userLocation,markers)
       markers.forEach(marker => {
         if (marker.status === 'filled' || marker.status === 'partial') {
           const distance = calculateDistance(

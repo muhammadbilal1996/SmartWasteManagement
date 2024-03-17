@@ -35,7 +35,6 @@ const BinsStatusScreen = ({navigation}) => {
                   );
                 });
               if (binsArray.length > 0) {
-                console.log("binsArray...........",binsArray)
                 setBinsData(binsArray);
               } else {
                 setBinsData([]);
