@@ -72,13 +72,13 @@ const HomeScreen = () => {
 
   const getBinsData = (userArea) =>{
     const user = auth().currentUser;
-  
+
     if (user) {
       const binsRef = database().ref('bins');
       binsRef.on('value', snapshot => {
         const binData = snapshot.val();
         if (binData) {
-        
+
             const sectorData = binData[userArea];
             if (sectorData) {
               const newMarkers = Object.keys(sectorData).reduce((markers, street) => {
@@ -95,8 +95,8 @@ const HomeScreen = () => {
               setMarkers(newMarkers);
               setLoading(false)
             }
-        
-        
+
+
         }
       });
       setLoading(false)
@@ -193,6 +193,9 @@ const HomeScreen = () => {
   const deg2rad = deg => {
     return deg * (Math.PI / 180);
   };
+  const removeLastLocation = polylineCoordinates => {
+    return polylineCoordinates.slice(0, -1);
+  };
 
   useEffect(() => {
     if (nearestFilledBin) {
@@ -221,7 +224,7 @@ const HomeScreen = () => {
         }
       });
 
-      setPolylineCoordinates(polylineCoordinates);
+      setPolylineCoordinates(removeLastLocation(polylineCoordinates));
     }
 
   }, [userLocation, nearestFilledBin, markers]);
