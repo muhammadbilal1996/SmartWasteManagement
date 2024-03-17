@@ -88,7 +88,7 @@ const HomeScreen = () => {
                   title: bin.binName || 'Bin',
                   latitude: bin.binLat,
                   longitude: bin.binLng,
-                  status: bin.binPercentage,
+                  status: bin.binStatus,
                 });
                 return markers;
               }, []);
@@ -156,7 +156,7 @@ const HomeScreen = () => {
       let nearestBin = null;
 
       markers.forEach(marker => {
-        if (marker.status === 'filled') {
+        if (marker.status === 'filled' || marker.status === 'partial') {
           const distance = calculateDistance(
             userLocation.latitude,
             userLocation.longitude,
@@ -213,7 +213,7 @@ const HomeScreen = () => {
 
       // Add other filled bins' coordinates
       markers.forEach(marker => {
-        if (marker.status === 'filled' && marker !== nearestFilledBin) {
+        if (marker.status === 'filled' || marker.status === 'partial' && marker !== nearestFilledBin) {
           polylineCoordinates.push({
             latitude: marker.latitude,
             longitude: marker.longitude,
@@ -223,7 +223,6 @@ const HomeScreen = () => {
 
       setPolylineCoordinates(polylineCoordinates);
     }
-  console.log("userAreauserAreauserAreamarkers",markers);
 
   }, [userLocation, nearestFilledBin, markers]);
 
@@ -299,36 +298,21 @@ const HomeScreen = () => {
                 }}
                 title={marker.title}>
                 <Image
-                  source={
-                    marker.status ==='filled'
-                      ? require('../../assets/images/filled_bin.png')
-                      : require('../../assets/images/empty_bin.png')
-                  }
-                  style={{width: 24, height: 24}}
-                />
+            source={
+              marker?.status === 'filled'
+                ? require('../../assets/images/filled_bin.png')
+                :  marker?.status === 'partial'
+                ? require('../../assets/images/partial_bin.png')
+                : require('../../assets/images/empty_bin.png')
+            }
+            style={{width: 24, height: 24}}
+          />
               </Marker>
             ))}
           </MapView>
         )
       )}
 
-      {/* Render "Collect Now" button if nearest filled bin is selected */}
-      {nearestFilledBin && (
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            width: '40%',
-            bottom: 20,
-            alignSelf: 'center',
-            alignItems: 'center',
-            padding: 10,
-            backgroundColor: Colors.primary_dark,
-            borderRadius: 5,
-          }}
-          onPress={handleCollectNow}>
-          <Text style={{color: 'white', fontWeight: 'bold'}}>Collect Now</Text>
-        </TouchableOpacity>
-      )}
     </View>
   );
 };

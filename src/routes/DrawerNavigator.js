@@ -11,6 +11,7 @@ import FeedbackScreen from "../screens/feedback/FeedbackScreen";
 import ComplainScreen from '../screens/Complain/ComplainScreen';
 import WasteBin from '../screens/Bins/ViewBins';
 import CollectorBinView from '../screens/Bins/CollectorBinView';
+import CollectorBinsDetail from '../screens/Bins/CollectorBinsDetail';
 
 
 const Drawer = createDrawerNavigator();
@@ -26,6 +27,8 @@ const MainStackNavigator = () => {
             <Stack.Screen name="HistoryScreen" component={HistoryScreen} />
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
             <Stack.Screen name="CollectorBin" component={CollectorBinView} />
+            <Stack.Screen name="CollectorBinsDetail" component={CollectorBinsDetail} />
+
 
             <Stack.Screen name="ViewBin" component={WasteBin} />
 
