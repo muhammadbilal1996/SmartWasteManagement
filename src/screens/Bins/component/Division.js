@@ -18,8 +18,8 @@ const Divison = ({text,left}) => {
 
   const styles =StyleSheet.create({
     view : {position: 'absolute',top:70,right:230, justifyContent: 'center', alignItems: 'center'},
-    subView:{height: 50, width: 1,backgroundColor:'#000000',paddingBottom:20},
-    text:{fontSize: 28,  marginVertical: 45, transform: [{rotate: '270deg'}]}
+    subView:{height: 50, width: 1,backgroundColor:'#000000',paddingBottom:20,},
+    text:{fontSize: 28,  marginVertical: 55, transform: [{rotate: '270deg'}]}
 
 
   })

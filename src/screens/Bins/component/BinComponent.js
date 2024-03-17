@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   map: {
-    height: 150,
+    height: 250,
     width: '100%',
   },
   itemName: {

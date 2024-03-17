@@ -215,7 +215,7 @@ const DrawerNavContent = props => {
             <Text style={styles.screenTitle}>Report an Issue</Text>
           </TouchableOpacity>
 
-          {userDetails?.userType !== 'collector' && (
+        
             <TouchableOpacity
               onPress={() => handleNavigation('FeedbackScreen')}
               activeOpacity={0.8}
@@ -229,13 +229,13 @@ const DrawerNavContent = props => {
               }>
               <Icon
                 style={{marginLeft: 8}}
-                name="exclamation-triangle"
+                name="comment"
                 size={24}
                 color="#C8C8C8"
               />
               <Text style={styles.screenTitle}>Feedback</Text>
             </TouchableOpacity>
-          )}
+        
           <TouchableOpacity
             onPress={() => {
               constants.storage.remove('userDetails');

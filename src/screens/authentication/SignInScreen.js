@@ -93,15 +93,18 @@ const SignInScreen = ({navigation}) => {
       auth()
         .signInWithEmailAndPassword(state.email, state.password)
         .then(res => {
+          console.log("res......",res);
+
           database()
             .ref(`/users/${res.user.uid}`)
             .on('value', snapshot => {
               //constants.storage.set('userDetails', snapshot);
+              console.log(snapshot);
+
               if (
                 snapshot.val().userType === 'collector' &&
                 snapshot.val().status =='pending'
               ) {
-                console.log(snapshot);
                 setState({
                   ...state,
                   isLoading: false,
@@ -143,6 +146,8 @@ const SignInScreen = ({navigation}) => {
 
         })
         .catch(error => {
+          console.log("errorerrorerror",error);
+
           if (error.code === 'auth/wrong-password') {
             setState({...state, isLoading: false});
             Snackbar.show({
@@ -168,7 +173,7 @@ const SignInScreen = ({navigation}) => {
               ...state,
               isLoading: false,
             });
-          } else if (error.code === 'auth/network-request-failed') {
+          } else 
             Snackbar.show({
               text: 'Make sure you have internet connection ',
               duration: Snackbar.LENGTH_INDEFINITE,
@@ -182,7 +187,7 @@ const SignInScreen = ({navigation}) => {
               ...state,
               isLoading: false,
             });
-          }
+          
         });
     }
   };

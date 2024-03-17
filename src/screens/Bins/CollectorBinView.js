@@ -77,7 +77,7 @@ const CollectorBinView = ({navigation}) => {
         onPress={() => navigation.navigate('CollectorBinsDetail',{binsData:item})}
         style={[
           styles.itemContainer,
-          {borderColor: item?.binStatus === 'filled' ? 'red' : 'green'},
+          {borderColor: item?.binStatus === 'filled' ? 'red' : item?.binStatus === 'partial' ? 'yellow' : 'green'},
         ]}>
         <MapView
           style={styles.map}
@@ -113,7 +113,6 @@ const CollectorBinView = ({navigation}) => {
             justifyContent: 'space-between',
           }}>
           <View style={{padding: 12, justifyContent: 'center'}}>
-            <Text style={styles.itemName}>{item?.binName}</Text>
             <Text style={styles.itemDetails}>
               Location: {item?.binLocation} {'\n'}
               Status: {item?.binStatus}
@@ -189,7 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     marginBottom: 12,
-    borderWidth: 1.5,
+    borderWidth: 3.5,
     overflow: 'hidden',
   },
   map: {

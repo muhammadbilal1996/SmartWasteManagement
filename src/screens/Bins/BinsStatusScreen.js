@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
 
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
@@ -7,47 +7,96 @@ import BinComponent from './component/BinComponent';
 import WasteBin from './ViewBins';
 import Header from '../../components/Header';
 import NoBinAssigned from '../../components/NoBinAssigned';
+import { Colors } from '../../utills/Colors';
 
 const BinsStatusScreen = ({navigation}) => {
   const [binsData, setBinsData] = useState();
+  const [loading,setLoading] =useState(false)
+
   useEffect(() => {
-    // Check if user is authenticated
-    const user = auth().currentUser; // Use auth module to get the current user
-    if (user) {
-      // Retrieve bin data for the current user from database
-      const binsRef = database()
-        .ref('bins')
-        .orderByChild('comCollector')
-        .equalTo(user.uid); // Remove .database() from database()
-      if (binsRef) {
-        binsRef.on('value', snapshot => {
-          const binData = snapshot?.val();
-          if (binData) {
-            setBinsData(binData);
-          }
-        });
+    const fetchUserInfo = async () => {
+      setLoading(true);
+  
+      const currentUser = auth().currentUser;
+      if (currentUser) {
+        const userData = await getUserInfo(currentUser.uid);
+        console.log('user Data.', userData);
+        if (userData?.userLat && userData?.userLng) {
+          const binsRef = database().ref('bins');
+          binsRef.on('value', snapshot => {
+            const binData = snapshot.val();
+            if (binData) {
+              const binsArray = Object.values(binData)
+                .flatMap(sector => Object.values(sector))
+                .filter(bin => {
+                  return (
+                    bin.binLat == userData.userLat&&
+                    bin.binLng ==userData.userLng
+                  );
+                });
+              if (binsArray.length > 0) {
+                console.log("binsArray...........",binsArray)
+                setBinsData(binsArray);
+              } else {
+                setBinsData([]);
+              }
+              setLoading(false);
+            } else {
+              setBinsData([]);
+              setLoading(false);
+            }
+          });
+        }
+      } else {
+        console.log('No user is currently logged in.');
       }
-    }
+    };
+  
+    fetchUserInfo();
   }, []);
+  
+
+  const getUserInfo = async userId => {
+    try {
+      const userSnapshot = await database()
+        .ref('users/' + userId)
+        .once('value');
+
+      return userSnapshot.val();
+    } catch (error) {
+      console.error('Error fetching user details: ', error);
+      return null;
+    }
+  };
 
 
   return (
     <View style={styles.mainContainer}>
       <Header title={'Bins Status'} />
-      {binsData ? 
+      {loading ? (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator
+            size="large"
+            color={Colors.primary}
+            style={styles.loader}
+          />
+        </View>
+      ) : (
+        <>
+         {binsData ? 
       <>
-      <WasteBin percentage={72} />
+      <WasteBin percentage={binsData[0].binPercentage} />
       
         {binsData &&
-          Object.entries(binsData).map(([binId, binData]) => (
             <BinComponent
-              key={binId}
-              binsData={binData}
+              key={binsData[0].binId}
+              binsData={binsData[0]}
               navigation={navigation}
-            />
-          ))}
+            />}
       </>
       : <NoBinAssigned/>}
+        </>)}
+     
     </View>
   );
 };
